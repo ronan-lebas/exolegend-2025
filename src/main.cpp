@@ -25,7 +25,8 @@ void reset()
 void loop()
 {
     if (gladiator->game->isStarted())
-    {
+    {   
+        runner->instructions();
         while (true)
         {
             runner->run();

@@ -6,6 +6,7 @@
 memory.bin
 platformio.ini
 ghost.bat
+ghost.sh
 README.rst
 libs
 images

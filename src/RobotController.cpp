@@ -1,11 +1,48 @@
 #include "RobotController.h"
 
-RobotController::RobotController(Gladiator *gladiator) : gladiator(gladiator), driver(gladiator), currentX(0), currentY(0) {
+RobotController::RobotController(Gladiator *gladiator) : gladiator(gladiator), driver(gladiator), currentX(0), currentY(0)
+{
     squareSize = gladiator->maze->getSquareSize();
+    currentTargetPath = nullptr;
 }
 
-void RobotController::run() {
+void RobotController::run()
+{
     driver.run();
+    if (currentTargetPath != nullptr)
+    {
+        if (currentTargetPath->waypoints.empty())
+        {
+            gladiator->log("Path finished");
+            Position pos = gladiator->robot->getData().position;
+            gladiator->log("Current position: (%f, %f)", pos.x, pos.y);
+            
+            delete currentTargetPath;
+            currentTargetPath = nullptr;
+        }
+        else
+        {
+            if (driver.isTargetReached())
+            {
+                if (!currentTargetPath->waypoints.empty())
+                {
+                    std::pair<int, int> next = currentTargetPath->waypoints.front();
+                    currentTargetPath->waypoints.erase(currentTargetPath->waypoints.begin()); // Remove first element
+
+                    gladiator->log("Next waypoint: (%d, %d)", next.first, next.second);
+
+                    std::pair<float, float> coords = caseToCoords(next.first, next.second);
+                    gladiator->log("Coords corresponding: (%f, %f)", coords.first, coords.second);
+
+                    driver.goTo(coords.first, coords.second);
+                }
+            }
+        }
+    }
+    else
+    {
+        driver.stop();
+    }
 }
 
 void RobotController::goTo(int i, int j)
@@ -17,20 +54,23 @@ void RobotController::goTo(int i, int j)
 Path RobotController::pathTo(int i, int j)
 {
     Path path;
-    // Simple straight-line path for now
     MazeSquare *position = gladiator->maze->getNearestSquare();
 
-    int dx = (i > position->i) ? 1 : -1;
-    int dy = (j > position->j) ? 1 : -1;
-    for (int x = position->i; x != i; x += dx)
+    int x = position->i;
+    int y = position->j;
+
+    while (x != i || y != j)
     {
-        path.waypoints.emplace_back(x, currentY);
+        if (abs(i - x) > abs(j - y))
+        {
+            x += (i > x) ? 1 : -1;
+        }
+        else
+        {
+            y += (j > y) ? 1 : -1;
+        }
+        path.waypoints.emplace_back(x, y);
     }
-    for (int y = position->j; y != j; y += dy)
-    {
-        path.waypoints.emplace_back(i, y);
-    }
-    path.waypoints.emplace_back(i, j);
 
     // Log the path
     gladiator->log("Path to (%d, %d):", i, j);
@@ -44,15 +84,20 @@ Path RobotController::pathTo(int i, int j)
 
 void RobotController::follow(const Path &path)
 {
-    for (const auto &point : path.waypoints)
-    {
-        std::pair<int, int> coords = caseToCoords(point.first, point.second);
-        if(driver.isTargetReached())
-            driver.goTo(coords.first, coords.second);        
-    }
+    // inverrt path vector order
+    currentTargetPath = new Path(path);
+    std::pair<int, int> next = currentTargetPath->waypoints.front();
+    currentTargetPath->waypoints.erase(currentTargetPath->waypoints.begin()); // Remove first element
+
+    gladiator->log("Next waypoint: (%d, %d)", next.first, next.second);
+
+    std::pair<float, float> coords = caseToCoords(next.first, next.second);
+    gladiator->log("Coords corresponding: (%f, %f)", coords.first, coords.second);
+
+    driver.goTo(coords.first, coords.second);
 }
 
-std::pair<int, int> RobotController::caseToCoords(int i, int j)
+std::pair<float, float> RobotController::caseToCoords(int i, int j)
 {
-    return std::make_pair((i + 0.5) * squareSize, (j + 0.5) * squareSize);
+    return std::make_pair((float)(i + 0.5) * squareSize, (float)(j + 0.5) * squareSize);
 }

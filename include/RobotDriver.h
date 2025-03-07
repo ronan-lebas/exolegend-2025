@@ -17,6 +17,7 @@ public:
     void forward();
     void rotateLeft();
     void rotateRight();
+    void stop();
 };
 
 #endif
