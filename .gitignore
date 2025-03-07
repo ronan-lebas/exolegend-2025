@@ -3,3 +3,11 @@
 .vscode/c_cpp_properties.json
 .vscode/launch.json
 .vscode/ipch
+memory.bin
+platformio.ini
+ghost.bat
+README.rst
+libs
+images
+examples
+.vscode
