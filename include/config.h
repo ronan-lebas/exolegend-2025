@@ -3,3 +3,11 @@
 
 #define FORWARD_SPEED 0.25
 #define ROTATE_SPEED 0.1
+
+#define MAZE_SIZE 12
+
+#define WEIGHT_DISTANCE 0.5
+#define WEIGHT_ACTIVE_BOMB 0.5
+#define WEIGHT_UNACTIVE_BOMB -1
+#define WEIGHT_ENEMY 0.5
+#define WEIGHT_FRIEND 0.5
