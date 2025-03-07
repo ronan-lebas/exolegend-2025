@@ -7,19 +7,13 @@
 
 class GameState {
     private:
-        int radius;
         int map[12][12];
+        std::pair<int, int> last_visited[NUMBER_OF_CASES_PENALTY];
         Gladiator *gladiator;
-        std::pair<int, int> currentPosition;
     public:
         GameState(Gladiator *gladiator);
-        GameState(Gladiator *gladiator, int radius);
-        void setRadius(int radius);
-        int getRadius();
-        void setCurrentPosition(std::pair<int, int> position);
-        std::pair<int, int> getCurrentPosition();
-        void update();
-        int loss(std::pair<int, int> position);
+        void updateVisited(void);
+        float loss(std::pair<int, int> position);
         std::pair<int, int> searchObjective(void);
 };
 

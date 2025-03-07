@@ -2,12 +2,17 @@
 #define RUNNER_H
 
 #include "RobotController.h"
+#include "GameState.h"
 #include "gladiator.h"
 
 class Runner {
 private:
     RobotController controller;
+    GameState gameState;
     Gladiator *gladiator;
+    std::pair<int, int> objective;
+    long time1;
+    long time2;
 public:
     Runner(Gladiator *gladiator);
     void instructions(); // Instructions for the robot

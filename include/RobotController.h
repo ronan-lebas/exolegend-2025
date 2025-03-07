@@ -4,7 +4,6 @@
 #include "RobotDriver.h"
 #include "gladiator.h"
 #include <vector>
-#include "aStar.h"
 
 struct Path {
     std::vector<std::pair<int, int>> waypoints;
@@ -18,6 +17,7 @@ private:
     float squareSize;
     std::pair<float, float> caseToCoords(int i, int j);
     Path *currentTargetPath;
+    bool targetReached;
 public:
     RobotController(Gladiator *gladiator);
     void run();
@@ -25,6 +25,7 @@ public:
     Path straightPath(int i, int j);
     Path pathTo(int i, int j);
     void follow(const Path& path);
+    bool isTargetReached() { return targetReached; }
 };
 
 #endif

@@ -27,6 +27,4 @@ std::vector<MazeSquare*> reconstructPath(Node* node);
 
 Path aStar(MazeSquare* start, MazeSquare* goal);
 
-
-
 #endif
