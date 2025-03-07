@@ -1,4 +1,4 @@
-#include "a_star.h"
+#include "aStar.h"
 
 bool CompareNodes::operator()(const Node* a, const Node* b) {
         return a->f() > b->f();

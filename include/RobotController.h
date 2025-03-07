@@ -4,6 +4,7 @@
 #include "RobotDriver.h"
 #include "gladiator.h"
 #include <vector>
+#include "aStar.h"
 
 struct Path {
     std::vector<std::pair<int, int>> waypoints;

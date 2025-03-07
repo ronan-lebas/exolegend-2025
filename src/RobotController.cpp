@@ -1,5 +1,4 @@
 #include "RobotController.h"
-#include "a_star.h"
 
 RobotController::RobotController(Gladiator *gladiator) : gladiator(gladiator), driver(gladiator), currentX(0), currentY(0)
 {
