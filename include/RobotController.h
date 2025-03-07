@@ -18,6 +18,7 @@ private:
     std::pair<float, float> caseToCoords(int i, int j);
     Path *currentTargetPath;
     bool targetReached;
+    bool newPathSet;
 public:
     RobotController(Gladiator *gladiator);
     void run();

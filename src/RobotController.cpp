@@ -1,7 +1,7 @@
 #include "RobotController.h"
 #include "aStar.h"
 
-RobotController::RobotController(Gladiator *gladiator) : gladiator(gladiator), driver(gladiator), currentX(0), currentY(0), targetReached(false)
+RobotController::RobotController(Gladiator *gladiator) : gladiator(gladiator), driver(gladiator), currentX(0), currentY(0), targetReached(false), newPathSet(false)
 {
     squareSize = gladiator->maze->getSquareSize();
     currentTargetPath = nullptr;
@@ -10,9 +10,11 @@ RobotController::RobotController(Gladiator *gladiator) : gladiator(gladiator), d
 void RobotController::run()
 {
     driver.run();
+
     if (currentTargetPath != nullptr)
     {
-        if (currentTargetPath->waypoints.empty())
+        // If no more waypoints, stop and clean up
+        if (driver.isTargetReached() && currentTargetPath->waypoints.empty())
         {
             gladiator->log("Path finished");
             Position pos = gladiator->robot->getData().position;
@@ -22,24 +24,21 @@ void RobotController::run()
             
             delete currentTargetPath;
             currentTargetPath = nullptr;
+            driver.stop();
+            return;
         }
-        else
+
+        // If target is reached, get next waypoint
+        if (driver.isTargetReached() || newPathSet)  // Ensure it picks the first waypoint too
         {
-            if (driver.isTargetReached())
-            {
-                if (!currentTargetPath->waypoints.empty())
-                {
-                    std::pair<int, int> next = currentTargetPath->waypoints.front();
-                    currentTargetPath->waypoints.erase(currentTargetPath->waypoints.begin()); // Remove first element
+            std::pair<int, int> next = currentTargetPath->waypoints.front();
+            currentTargetPath->waypoints.erase(currentTargetPath->waypoints.begin());
 
-                    gladiator->log("Next waypoint: (%d, %d)", next.first, next.second);
+            gladiator->log("Next waypoint: (%d, %d)", next.first, next.second);
 
-                    std::pair<float, float> coords = caseToCoords(next.first, next.second);
-                    //gladiator->log("Coords corresponding: (%f, %f)", coords.first, coords.second);
-
-                    driver.goTo(coords.first, coords.second);
-                }
-            }
+            std::pair<float, float> coords = caseToCoords(next.first, next.second);
+            driver.goTo(coords.first, coords.second);
+            newPathSet = false;
         }
     }
     else
@@ -55,6 +54,7 @@ void RobotController::goTo(int i, int j)
     {
         gladiator->log("Waypoint: (%d, %d)", point.first, point.second);
     }
+    newPathSet = true;
     follow(path);
 }
 
@@ -96,22 +96,12 @@ Path RobotController::straightPath(int i, int j)
 
 void RobotController::follow(const Path &path)
 {
-    // inverrt path vector order
     targetReached = false;
     if (currentTargetPath != nullptr)
     {
         delete currentTargetPath;
     }
     currentTargetPath = new Path(path);
-    std::pair<int, int> next = currentTargetPath->waypoints.front();
-    currentTargetPath->waypoints.erase(currentTargetPath->waypoints.begin()); // Remove first element
-
-    //gladiator->log("Next waypoint: (%d, %d)", next.first, next.second);
-
-    std::pair<float, float> coords = caseToCoords(next.first, next.second);
-    //gladiator->log("Coords corresponding: (%f, %f)", coords.first, coords.second);
-
-    driver.goTo(coords.first, coords.second);
 }
 
 std::pair<float, float> RobotController::caseToCoords(int i, int j)
