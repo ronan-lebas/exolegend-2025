@@ -1,0 +1,5 @@
+#define MARGIN_RATIO 0.2
+#define ANGLE_MARGIN 0.175
+
+#define FORWARD_SPEED 0.6
+#define ROTATE_SPEED 0.1

@@ -14,8 +14,11 @@ private:
     Gladiator *gladiator;
     RobotDriver driver;
     int currentX, currentY;
+    float squareSize;
+    std::pair<int, int> caseToCoords(int i, int j);
 public:
     RobotController(Gladiator *gladiator);
+    void run();
     void goTo(int i, int j);
     Path pathTo(int i, int j);
     void follow(const Path& path);

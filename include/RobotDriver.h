@@ -6,10 +6,17 @@
 class RobotDriver {
 private:
     Gladiator *gladiator;
+    bool targetReached;
+    float targetX, targetY;
+    float squareSize;
 public:
     RobotDriver(Gladiator *gladiator);
-    void goTo(double x, double y);
-    void rotate(double theta);
+    void run();
+    bool isTargetReached() { return targetReached; }
+    void goTo(float x, float y);
+    void forward();
+    void rotateLeft();
+    void rotateRight();
 };
 
 #endif

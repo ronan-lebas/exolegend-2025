@@ -29,6 +29,7 @@ void loop()
         while (true)
         {
             runner->run();
+            delay(1);
         }
     }
 }
