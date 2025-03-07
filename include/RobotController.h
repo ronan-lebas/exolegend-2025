@@ -21,6 +21,7 @@ public:
     RobotController(Gladiator *gladiator);
     void run();
     void goTo(int i, int j);
+    Path straightPath(int i, int j);
     Path pathTo(int i, int j);
     void follow(const Path& path);
 };

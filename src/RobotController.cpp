@@ -1,4 +1,5 @@
 #include "RobotController.h"
+#include "a_star.h"
 
 RobotController::RobotController(Gladiator *gladiator) : gladiator(gladiator), driver(gladiator), currentX(0), currentY(0)
 {
@@ -52,6 +53,11 @@ void RobotController::goTo(int i, int j)
 }
 
 Path RobotController::pathTo(int i, int j)
+{
+    return aStar(gladiator->maze->getNearestSquare(), gladiator->maze->getSquare(i, j));
+}
+
+Path RobotController::straightPath(int i, int j)
 {
     Path path;
     MazeSquare *position = gladiator->maze->getNearestSquare();
