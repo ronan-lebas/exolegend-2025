@@ -49,9 +49,9 @@ void Runner::run()
 
     if (millis() - time3 >= 100)
     {
-        if (gladiator->weapon->canDropBombs(3) > 0)
+        if (gladiator->weapon->canDropBombs(2) > 0)
         {
-            gladiator->weapon->dropBombs(3);
+            gladiator->weapon->dropBombs(2);
         }
     }
 

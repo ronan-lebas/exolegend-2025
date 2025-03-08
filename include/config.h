@@ -9,7 +9,7 @@
 #define CENTER_X 1.5
 #define CENTER_Y 1.5
 
-#define WEIGHT_CENTER 10
+#define WEIGHT_CENTER 15
 #define WEIGHT_NOGO 1000
 #define WEIGHT_DISTANCE 1
 #define WEIGHT_ACTIVE_BOMB 20

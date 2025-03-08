@@ -25,7 +25,7 @@ float GameState::loss(std::pair<int, int> position, MazeSquare * currentSquare, 
 
     float loss = 0;
 
-    //loss += WEIGHT_CENTER * std::sqrt(std::pow(currentPosition.x - CENTER_X, 2) + std::pow(currentPosition.y - CENTER_Y, 2));
+    loss += WEIGHT_CENTER * std::sqrt(std::pow(currentPosition.x - CENTER_X, 2) + std::pow(currentPosition.y - CENTER_Y, 2));
 
     float currentSize = gladiator->maze->getCurrentMazeSize();
     int numCases = currentSize/gladiator->maze->getSquareSize();
@@ -39,7 +39,7 @@ float GameState::loss(std::pair<int, int> position, MazeSquare * currentSquare, 
 
     if (distances.find(square) != distances.end()) {
         loss += WEIGHT_DISTANCE * distances[square];
-        gladiator->log("Distance to square %d, %d: %d", position.first, position.second, distances[square]);
+        //gladiator->log("Distance to square %d, %d: %d", position.first, position.second, distances[square]);
     } else {
         loss += WEIGHT_DISTANCE * MAX_DIJKSTRA_DEPTH;
     }
@@ -116,7 +116,7 @@ std::pair<int, int> GameState::searchObjective(void)
     {
         for (int j = 0; j < MAZE_SIZE; j++)
         {
-            int currentLoss = loss({i, j}, currentSquare, currentPosition, distances);
+            float currentLoss = loss({i, j}, currentSquare, currentPosition, distances);
             losses[i][j] = currentLoss;
             if (currentLoss < minLoss)
             {
