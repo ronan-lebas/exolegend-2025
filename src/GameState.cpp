@@ -9,6 +9,16 @@ GameState::GameState(Gladiator *gladiator) : gladiator(gladiator)
     }
 }
 
+void GameState::reset()
+{
+    // Reset function
+    gladiator->log("Call of reset function game state");
+    for (int i = 0; i < NUMBER_OF_CASES_PENALTY; i++)
+    {
+        last_visited[i] = {-1, -1};
+    }
+}
+
 float GameState::loss(std::pair<int, int> position, MazeSquare * currentSquare, Position currentPosition, std::unordered_map<MazeSquare *, int> distances)
 {
     MazeSquare *square = gladiator->maze->getSquare(position.first, position.second);

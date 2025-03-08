@@ -18,6 +18,7 @@ public:
     Runner(Gladiator *gladiator);
     void instructions(); // Instructions for the robot
     void run(); // Main loop or execution function
+    void reset(); // Reset function
 };
 
 #endif

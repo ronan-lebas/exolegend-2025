@@ -13,7 +13,6 @@ class RobotController {
 private:
     Gladiator *gladiator;
     RobotDriver driver;
-    int currentX, currentY;
     float squareSize;
     std::pair<float, float> caseToCoords(int i, int j);
     Path *currentTargetPath;
@@ -22,6 +21,7 @@ private:
 public:
     RobotController(Gladiator *gladiator);
     void run();
+    void reset();
     void goTo(int i, int j);
     Path straightPath(int i, int j);
     Path pathTo(int i, int j);

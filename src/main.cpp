@@ -19,7 +19,8 @@ void reset()
 {
     // fonction de reset:
     // initialisation de toutes vos variables avant le début d'un match
-    gladiator->log("Call of reset function"); // GFA 4.5.1
+    gladiator->log("Call of reset function main"); // GFA 4.5.1
+    runner->reset();
 }
 
 void loop()
@@ -30,7 +31,7 @@ void loop()
         while (true)
         {
             runner->run();
-            delay(1);
+            delay(50);
         }
     }
 }

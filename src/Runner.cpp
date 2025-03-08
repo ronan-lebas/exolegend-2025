@@ -10,6 +10,15 @@ Runner::Runner(Gladiator *gladiator) : controller(gladiator), gameState(gladiato
     objective = std::make_pair(5, 5);
 }
 
+void Runner::reset()
+{
+    // Reset function
+    // Initialization of all your variables before the start of a match
+    gladiator->log("Call of reset function runner");
+    controller.reset();
+    gameState.reset();
+}
+
 void Runner::instructions()
 {
     gladiator->control->setWheelPidCoefs(WheelAxis::LEFT, 0.4, 0.8, 0.);
@@ -41,7 +50,7 @@ void Runner::run()
     {
         if (gladiator->weapon->getBombCount() > 0)
         {
-            gladiator->weapon->dropBombs(1);
+            //gladiator->weapon->dropBombs(1);
         }
     }
 

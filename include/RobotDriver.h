@@ -12,11 +12,14 @@ private:
 public:
     RobotDriver(Gladiator *gladiator);
     void run();
+    void reset();
     bool isTargetReached() { return targetReached; }
     void goTo(float x, float y);
     void forward();
     void rotateLeft();
     void rotateRight();
+    void forwardLeft();
+    void forwardRight();
     void stop();
 };
 

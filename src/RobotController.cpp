@@ -1,8 +1,17 @@
 #include "RobotController.h"
 #include "aStar.h"
 
-RobotController::RobotController(Gladiator *gladiator) : gladiator(gladiator), driver(gladiator), currentX(0), currentY(0), targetReached(false), newPathSet(false)
+RobotController::RobotController(Gladiator *gladiator) : gladiator(gladiator), driver(gladiator), targetReached(false), newPathSet(false)
 {
+    squareSize = gladiator->maze->getSquareSize();
+    currentTargetPath = nullptr;
+    targetReached = false;
+    newPathSet = false;
+}
+
+void RobotController::reset()
+{
+    gladiator->log("Call of reset function controller");
     squareSize = gladiator->maze->getSquareSize();
     currentTargetPath = nullptr;
 }

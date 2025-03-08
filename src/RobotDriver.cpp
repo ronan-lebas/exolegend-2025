@@ -7,6 +7,11 @@ RobotDriver::RobotDriver(Gladiator *gladiator) : gladiator(gladiator) {
     targetReached = false;
 }
 
+void RobotDriver::reset() {
+    gladiator->log("Call of reset function driver");
+    targetReached = false;
+}
+
 void RobotDriver::run() {
     // Get current position
     RobotData data = gladiator->robot->getData();
@@ -26,18 +31,44 @@ void RobotDriver::run() {
         float dy = targetY - position.y;
         float theta = std::atan2(dy, dx);
 
-        //gladiator->log("Angle to target: %f", theta);
-        //gladiator->log("Current angle: %f", position.a);
-        //gladiator->log("Diff angle: %f", abs(theta - position.a));
-        float angleReached = abs(theta - position.a) < ANGLE_MARGIN;
-        if (!angleReached) {
+        // Normalize theta to be within the interval [-pi, pi] most close to position.a
+        while (theta - position.a > M_PI) theta -= 2 * M_PI;
+        while (theta - position.a < -M_PI) theta += 2 * M_PI;
+        
+
+        float obj_a = position.a;
+
+        // Normalize obj_a to be within the interval [-pi, pi]
+        while (obj_a > M_PI) obj_a -= 2 * M_PI;
+        while (obj_a < -M_PI) obj_a += 2 * M_PI;
+
+        float diff = abs(theta - obj_a);
+        gladiator->log("Angle to target: %f", theta);
+        gladiator->log("Current angle: %f", obj_a);
+        gladiator->log("Diff angle: %f", diff);
+
+        if (diff > ANGLE_MARGIN_TYPE_2) {
             // Rotate towards target
             if (theta > position.a) {
                 stop();
                 rotateLeft();
+                gladiator->log("Rotate left");
             } else {
                 stop();
                 rotateRight();
+                gladiator->log("Rotate right");
+            }
+        }
+        else if (diff > ANGLE_MARGIN_TYPE_1) {
+            // Rotate towards target
+            if (theta > position.a) {
+                stop();
+                forwardLeft();
+                gladiator->log("Forward left");
+            } else {
+                stop();
+                forwardRight();
+                gladiator->log("Forward right");
             }
         } else {
             // Move forward toward the obj
@@ -46,6 +77,7 @@ void RobotDriver::run() {
         }
     }
 }
+
 
 void RobotDriver::goTo(float x, float y) {
     targetX = x;
@@ -59,13 +91,23 @@ void RobotDriver::forward() {
 }
 
 void RobotDriver::rotateLeft() {
-    gladiator->control->setWheelSpeed(WheelAxis::LEFT, -ROTATE_SPEED);
-    gladiator->control->setWheelSpeed(WheelAxis::RIGHT, ROTATE_SPEED);
+    gladiator->control->setWheelSpeed(WheelAxis::LEFT, -ROTATE_SPEED_TYPE_2);
+    gladiator->control->setWheelSpeed(WheelAxis::RIGHT, ROTATE_SPEED_TYPE_2);
 }
 
 void RobotDriver::rotateRight() {
-    gladiator->control->setWheelSpeed(WheelAxis::LEFT, ROTATE_SPEED);
-    gladiator->control->setWheelSpeed(WheelAxis::RIGHT, -ROTATE_SPEED);
+    gladiator->control->setWheelSpeed(WheelAxis::LEFT, ROTATE_SPEED_TYPE_2);
+    gladiator->control->setWheelSpeed(WheelAxis::RIGHT, -ROTATE_SPEED_TYPE_2);
+}
+
+void RobotDriver::forwardLeft() {
+    gladiator->control->setWheelSpeed(WheelAxis::LEFT, ROTATE_SPEED_TYPE_1);
+    gladiator->control->setWheelSpeed(WheelAxis::RIGHT, FORWARD_SPEED);
+}
+
+void RobotDriver::forwardRight() {
+    gladiator->control->setWheelSpeed(WheelAxis::LEFT, FORWARD_SPEED);
+    gladiator->control->setWheelSpeed(WheelAxis::RIGHT, ROTATE_SPEED_TYPE_1);
 }
 
 void RobotDriver::stop() {

@@ -13,6 +13,7 @@ class GameState {
         Gladiator *gladiator;
     public:
         GameState(Gladiator *gladiator);
+        void reset(void);
         void updateVisited(void);
         float loss(std::pair<int, int> position, MazeSquare * currentSquare, Position currentPosition, std::unordered_map<MazeSquare*, int> distances);
         std::pair<int, int> searchObjective(void);
