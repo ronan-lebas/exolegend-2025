@@ -76,12 +76,25 @@ void Runner::run()
     {
         if (gladiator->weapon->canDropBombs(1) > 0)
         {
-            float expectedPoints = pointsExpected(objective.first, objective.second);
-            //gladiator->log("Expected points: %f/%f", expectedPoints, threshold);
+            float expectedPoints1bomb = pointsExpected1bomb(objective.first, objective.second);
+            float expectedPoints2bombs = 0;
+            if (gladiator->weapon->canDropBombs(2) > 0)
+                expectedPoints2bombs = pointsExpected2bombs(objective.first, objective.second);
+            float expectedPoints = expectedPoints1bomb > expectedPoints2bombs
+                                       ? expectedPoints1bomb
+                                       : expectedPoints2bombs;
+            // gladiator->log("Expected points: %f/%f", expectedPoints, threshold);
             if (expectedPoints > threshold)
             {
-                //gladiator->log("Dropping bomb at %d, %d", objective.first, objective.second);
-                gladiator->weapon->dropBombs(1);
+                // gladiator->log("Dropping bomb at %d, %d", objective.first, objective.second);
+                if (expectedPoints2bombs > expectedPoints1bomb && gladiator->weapon->canDropBombs(2) > 0)
+                {
+                    gladiator->weapon->dropBombs(2);
+                }
+                else
+                {
+                    gladiator->weapon->dropBombs(1);
+                }
                 threshold = INITIAL_THRESHOLD;
             }
             threshold -= THRESHOLD_DECAY;
@@ -92,7 +105,7 @@ void Runner::run()
     controller.run();
 }
 
-float Runner::pointsExpected(int i, int j)
+float Runner::pointsExpected1bomb(int i, int j)
 {
     // Get the square at i, j
     MazeSquare *square = gladiator->maze->getSquare(i, j);
@@ -118,5 +131,42 @@ float Runner::pointsExpected(int i, int j)
         }
     }
     score = score / 5.0;
+    return score;
+}
+
+float Runner::pointsExpected2bombs(int i, int j)
+{
+    // Get the square at i, j
+    MazeSquare *square = gladiator->maze->getSquare(i, j);
+    float score = 0.0;
+    int myTeam = gladiator->robot->getData().teamId;
+    MazeSquare *neighbors[9] = {square, square->northSquare, square->southSquare, square->eastSquare, square->westSquare, nullptr, nullptr, nullptr, nullptr};
+    if (neighbors[1] != nullptr)
+        neighbors[5] = neighbors[1]->northSquare;
+    if (neighbors[2] != nullptr)
+        neighbors[6] = neighbors[2]->southSquare;
+    if (neighbors[3] != nullptr)
+        neighbors[7] = neighbors[3]->eastSquare;
+    if (neighbors[4] != nullptr)
+        neighbors[8] = neighbors[4]->westSquare;
+    for (int i = 0; i < 9; i++)
+    {
+        if (neighbors[i] != nullptr)
+        {
+            if (neighbors[i]->possession == 0)
+            {
+                score += 1.0;
+            }
+            else if (neighbors[i]->possession == myTeam)
+            {
+                score += 0.0;
+            }
+            else
+            {
+                score += 2.0;
+            }
+        }
+    }
+    score = score / 9.0;
     return score;
 }

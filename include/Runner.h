@@ -22,7 +22,8 @@ public:
     void instructions(); // Instructions for the robot
     void run(); // Main loop or execution function
     void reset(); // Reset function
-    float pointsExpected(int i, int j); // Points expected to be scored
+    float pointsExpected1bomb(int i, int j); // Points expected to be scored
+    float pointsExpected2bombs(int i, int j); // Points expected to be scored
 };
 
 #endif
