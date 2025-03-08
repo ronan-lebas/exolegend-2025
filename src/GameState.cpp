@@ -104,10 +104,11 @@ std::pair<int, int> GameState::searchObjective(void)
     }
 
     // Print all losses array
-    // for (int i = 0; i < MAZE_SIZE; i++)
-    // {
-    //     gladiator->log("%.1f %.1f %.1f %.1f %.1f %.1f %.1f %.1f %.1f %.1f %.1f %.1f", losses[i][0], losses[i][1], losses[i][2], losses[i][3], losses[i][4], losses[i][5], losses[i][6], losses[i][7], losses[i][8], losses[i][9], losses[i][10], losses[i][11]);
-    // }
+    for 
+    (int i = 0; i < MAZE_SIZE; i++)
+    {
+        gladiator->log("%.1f %.1f %.1f %.1f %.1f %.1f %.1f %.1f %.1f %.1f %.1f %.1f", losses[i][0], losses[i][1], losses[i][2], losses[i][3], losses[i][4], losses[i][5], losses[i][6], losses[i][7], losses[i][8], losses[i][9], losses[i][10], losses[i][11]);
+    }
 
     gladiator->log("Best position: %d, %d", bestPosition.first, bestPosition.second);
     gladiator->log("Loss: %d", minLoss);

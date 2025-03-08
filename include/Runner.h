@@ -13,6 +13,7 @@ private:
     std::pair<int, int> objective;
     long time1;
     long time2;
+    long time3;
 public:
     Runner(Gladiator *gladiator);
     void instructions(); // Instructions for the robot
