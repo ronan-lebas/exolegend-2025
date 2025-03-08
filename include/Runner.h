@@ -14,6 +14,7 @@ private:
     long time1;
     long time2;
     long time3;
+    long time4;
 public:
     Runner(Gladiator *gladiator);
     void instructions(); // Instructions for the robot

@@ -18,11 +18,12 @@ private:
     Path *currentTargetPath;
     bool targetReached;
     bool newPathSet;
+    float speed;
 public:
     RobotController(Gladiator *gladiator);
     void run();
     void reset();
-    void goTo(int i, int j);
+    void goTo(int i, int j, float speed);
     Path straightPath(int i, int j);
     Path pathTo(int i, int j);
     void follow(const Path& path);

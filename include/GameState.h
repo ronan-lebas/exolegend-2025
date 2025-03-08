@@ -6,6 +6,11 @@
 #include <vector>
 #include "dijkstra.h"
 
+enum Objective {
+    COLLECT,
+    RUN,
+} typedef Objective;
+
 class GameState {
     private:
         int map[12][12];
@@ -15,8 +20,8 @@ class GameState {
         GameState(Gladiator *gladiator);
         void reset(void);
         void updateVisited(void);
-        float loss(std::pair<int, int> position, MazeSquare * currentSquare, Position currentPosition, std::unordered_map<MazeSquare*, int> distances);
-        std::pair<int, int> searchObjective(void);
+        float loss(std::pair<int, int> position, MazeSquare * currentSquare, Position currentPosition, std::unordered_map<MazeSquare*, int> distances, Objective objective);
+        std::pair<int, int> searchObjective(Objective objective);
 };
 
 #endif

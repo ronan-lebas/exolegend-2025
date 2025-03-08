@@ -27,11 +27,10 @@ void loop()
 {
     if (gladiator->game->isStarted())
     {   
-        runner->instructions();
+        //runner->instructions();
         while (true)
         {
             runner->run();
-            delay(50);
         }
     }
 }

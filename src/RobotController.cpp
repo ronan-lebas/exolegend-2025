@@ -1,5 +1,6 @@
 #include "RobotController.h"
 #include "aStar.h"
+#include "config.h"
 
 RobotController::RobotController(Gladiator *gladiator) : gladiator(gladiator), driver(gladiator), targetReached(false), newPathSet(false)
 {
@@ -7,12 +8,17 @@ RobotController::RobotController(Gladiator *gladiator) : gladiator(gladiator), d
     currentTargetPath = nullptr;
     targetReached = false;
     newPathSet = false;
+    speed = FORWARD_SPEED;
 }
 
 void RobotController::reset()
 {
     gladiator->log("Call of reset function controller");
     squareSize = gladiator->maze->getSquareSize();
+    if (currentTargetPath != nullptr)
+    {
+        delete currentTargetPath;
+    }
     currentTargetPath = nullptr;
 }
 
@@ -30,7 +36,7 @@ void RobotController::run()
             gladiator->log("Current position: (%f, %f)", pos.x, pos.y);
 
             targetReached = true;
-            
+
             delete currentTargetPath;
             currentTargetPath = nullptr;
             driver.stop();
@@ -38,7 +44,7 @@ void RobotController::run()
         }
 
         // If target is reached, get next waypoint
-        if (driver.isTargetReached() || newPathSet)  // Ensure it picks the first waypoint too
+        if (driver.isTargetReached() || newPathSet) // Ensure it picks the first waypoint too
         {
             std::pair<int, int> next = currentTargetPath->waypoints.front();
             currentTargetPath->waypoints.erase(currentTargetPath->waypoints.begin());
@@ -46,7 +52,7 @@ void RobotController::run()
             gladiator->log("Next waypoint: (%d, %d)", next.first, next.second);
 
             std::pair<float, float> coords = caseToCoords(next.first, next.second);
-            driver.goTo(coords.first, coords.second);
+            driver.goTo(coords.first, coords.second, speed);
             newPathSet = false;
         }
     }
@@ -56,7 +62,7 @@ void RobotController::run()
     }
 }
 
-void RobotController::goTo(int i, int j)
+void RobotController::goTo(int i, int j, float speed)
 {
     Path path = pathTo(i, j);
     for (const auto &point : path.waypoints)
@@ -64,6 +70,7 @@ void RobotController::goTo(int i, int j)
         gladiator->log("Waypoint: (%d, %d)", point.first, point.second);
     }
     newPathSet = true;
+    speed = speed;
     follow(path);
 }
 

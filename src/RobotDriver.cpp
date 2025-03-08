@@ -6,6 +6,7 @@ RobotDriver::RobotDriver(Gladiator *gladiator) : gladiator(gladiator)
 {
     squareSize = gladiator->maze->getSquareSize();
     targetReached = false;
+    speed = FORWARD_SPEED;
 }
 
 void RobotDriver::reset()
@@ -74,22 +75,23 @@ void RobotDriver::run()
         {
             // Move forward toward the obj
             stop();
-            forward();
+            forward(speed);
         }
     }
 }
 
-void RobotDriver::goTo(float x, float y)
+void RobotDriver::goTo(float x, float y, float speed)
 {
     targetX = x;
     targetY = y;
     targetReached = false;
+    speed = speed;
 }
 
-void RobotDriver::forward()
+void RobotDriver::forward(float speed)
 {
-    gladiator->control->setWheelSpeed(WheelAxis::LEFT, FORWARD_SPEED);
-    gladiator->control->setWheelSpeed(WheelAxis::RIGHT, FORWARD_SPEED);
+    gladiator->control->setWheelSpeed(WheelAxis::LEFT, speed);
+    gladiator->control->setWheelSpeed(WheelAxis::RIGHT, speed);
 }
 
 void RobotDriver::rotateLeft()
