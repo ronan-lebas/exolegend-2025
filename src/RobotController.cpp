@@ -23,11 +23,6 @@ void RobotController::run()
     if (currentTargetPath != nullptr)
     {
         // If no more waypoints, stop and clean up
-        // if empty print it
-        if (currentTargetPath->waypoints.empty())
-        {
-            gladiator->log("No more waypoints");
-        }
         if (driver.isTargetReached() && currentTargetPath->waypoints.empty())
         {
             gladiator->log("Path finished");
@@ -67,10 +62,10 @@ void RobotController::goTo(int i, int j)
     gladiator->log("Path to (%d, %d) computed :", i, j);
     // print size of path
     gladiator->log("Path size: %lu", path.waypoints.size());
-    for (const auto &point : path.waypoints)
-    {
-        gladiator->log("Waypoint: (%d, %d)", point.first, point.second);
-    }
+    // for (const auto &point : path.waypoints)
+    // {
+    //     gladiator->log("Waypoint: (%d, %d)", point.first, point.second);
+    // }
     newPathSet = true;
     delay(100);
     follow(path);

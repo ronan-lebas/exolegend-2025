@@ -111,7 +111,7 @@ void GameState::updateVisited(void)
 
 std::pair<int, int> GameState::searchObjective(void)
 {
-    int minLoss = 1000000; // Large number
+    float minLoss = 1000000; // Large number
     std::pair<int, int> bestPosition;
 
     MazeSquare *currentSquare = gladiator->maze->getNearestSquare();
@@ -148,7 +148,7 @@ std::pair<int, int> GameState::searchObjective(void)
     }
 
     gladiator->log("Best position: %d, %d", bestPosition.first, bestPosition.second);
-    gladiator->log("Loss: %d", minLoss);
+    gladiator->log("Loss: %f", minLoss);
 
     return bestPosition;
 }
