@@ -4,6 +4,9 @@
 #define FORWARD_SPEED 0.4
 #define ROTATE_SPEED 0.2
 
+#define FAST_FORWARD_SPEED 1.0
+#define FAST_ROTATE_SPEED 0.5
+
 #define MAZE_SIZE 12
 
 #define CENTER_X 1.5

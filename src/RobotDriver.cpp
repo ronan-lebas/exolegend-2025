@@ -6,6 +6,7 @@ RobotDriver::RobotDriver(Gladiator *gladiator) : gladiator(gladiator)
 {
     squareSize = gladiator->maze->getSquareSize();
     targetReached = false;
+    fastMode = false;
 }
 
 void RobotDriver::reset()
@@ -84,24 +85,57 @@ void RobotDriver::goTo(float x, float y)
     targetX = x;
     targetY = y;
     targetReached = false;
+    fastMode = false;
+}
+
+void RobotDriver::goToMax(float x, float y)
+{
+    targetX = x;
+    targetY = y;
+    targetReached = false;
+    fastMode = true;
 }
 
 void RobotDriver::forward()
 {
-    gladiator->control->setWheelSpeed(WheelAxis::LEFT, FORWARD_SPEED);
-    gladiator->control->setWheelSpeed(WheelAxis::RIGHT, FORWARD_SPEED);
+    if (fastMode)
+    {
+        gladiator->control->setWheelSpeed(WheelAxis::LEFT, FAST_FORWARD_SPEED);
+        gladiator->control->setWheelSpeed(WheelAxis::RIGHT, FAST_FORWARD_SPEED);
+    }
+    else
+    {
+        gladiator->control->setWheelSpeed(WheelAxis::LEFT, FORWARD_SPEED);
+        gladiator->control->setWheelSpeed(WheelAxis::RIGHT, FORWARD_SPEED);
+    }
 }
 
 void RobotDriver::rotateLeft()
 {
-    gladiator->control->setWheelSpeed(WheelAxis::LEFT, -ROTATE_SPEED);
-    gladiator->control->setWheelSpeed(WheelAxis::RIGHT, ROTATE_SPEED);
+    if (fastMode)
+    {
+        gladiator->control->setWheelSpeed(WheelAxis::LEFT, -FAST_ROTATE_SPEED);
+        gladiator->control->setWheelSpeed(WheelAxis::RIGHT, FAST_ROTATE_SPEED);
+    }
+    else
+    {
+        gladiator->control->setWheelSpeed(WheelAxis::LEFT, -ROTATE_SPEED);
+        gladiator->control->setWheelSpeed(WheelAxis::RIGHT, ROTATE_SPEED);
+    }
 }
 
 void RobotDriver::rotateRight()
 {
-    gladiator->control->setWheelSpeed(WheelAxis::LEFT, ROTATE_SPEED);
-    gladiator->control->setWheelSpeed(WheelAxis::RIGHT, -ROTATE_SPEED);
+    if (fastMode)
+    {
+        gladiator->control->setWheelSpeed(WheelAxis::LEFT, FAST_ROTATE_SPEED);
+        gladiator->control->setWheelSpeed(WheelAxis::RIGHT, -FAST_ROTATE_SPEED);
+    }
+    else
+    {
+        gladiator->control->setWheelSpeed(WheelAxis::LEFT, ROTATE_SPEED);
+        gladiator->control->setWheelSpeed(WheelAxis::RIGHT, -ROTATE_SPEED);
+    }
 }
 
 void RobotDriver::forwardLeft()

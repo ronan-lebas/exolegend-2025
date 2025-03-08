@@ -33,11 +33,11 @@ void Runner::run()
     if (millis() - time4 >= 50)
     {
         // Are we in the Maze ??
-        MazeSquare *currentSquare = gladiator->maze->getNearestSquare();
+        // MazeSquare *currentSquare = gladiator->maze->getNearestSquare();
         bool inTheMaze = controller.areWeInTheMaze();
         if(!inTheMaze)
         {
-            gladiator->log("We are not in the maze !!");
+            // gladiator->log("We are not in the maze !!");
             controller.returnToMaze();
         } else {
             // gladiator->log("Current position: %d, %d", currentSquare->i, currentSquare->j);

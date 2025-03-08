@@ -39,7 +39,8 @@ void RobotController::run()
         }
         else
         {
-            driver.goTo(CENTER_X, CENTER_Y);
+            //gladiator->log("Returning to maze !! MBAPPE SPEED !!");
+            driver.goToMax(CENTER_X, CENTER_Y);
             return;
         }
     }

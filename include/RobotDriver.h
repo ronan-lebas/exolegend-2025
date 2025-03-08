@@ -9,12 +9,14 @@ private:
     bool targetReached;
     float targetX, targetY;
     float squareSize;
+    bool fastMode;
 public:
     RobotDriver(Gladiator *gladiator);
     void run();
     void reset();
     bool isTargetReached() { return targetReached; }
     void goTo(float x, float y);
+    void goToMax(float x, float y);
     void forward();
     void rotateLeft();
     void rotateRight();
