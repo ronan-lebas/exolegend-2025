@@ -25,6 +25,14 @@ float GameState::loss(std::pair<int, int> position, MazeSquare * currentSquare, 
 
     float loss = 0;
 
+    loss += WEIGHT_CENTER * std::sqrt(std::pow(currentPosition.x - CENTER_X, 2) + std::pow(currentPosition.y - CENTER_Y, 2));
+
+    float currentSize = gladiator->maze->getCurrentMazeSize();
+    int numCases = currentSize/gladiator->maze->getSquareSize();
+    int numCasesMargin = numCases / 2;
+    loss += WEIGHT_NOGO * (position.first >= MAZE_SIZE - (numCases/2) || position.first < numCases/2 || position.second >= MAZE_SIZE - (numCases/2) || position.second < numCases/2);
+    gladiator->log("numCases: %d, numCasesMargin: %d, MAZE_SIZE - (numCases/2): %d", numCases, numCasesMargin, MAZE_SIZE - (numCases/2));
+
     if (distances.find(square) != distances.end()) {
         loss += WEIGHT_DISTANCE * distances[square];
     } else {

@@ -6,6 +6,11 @@
 
 #define MAZE_SIZE 12
 
+#define CENTER_X 1.5
+#define CENTER_Y 1.5
+
+#define WEIGHT_CENTER 10
+#define WEIGHT_NOGO 1000
 #define WEIGHT_DISTANCE 1
 #define WEIGHT_ACTIVE_BOMB 20
 #define WEIGHT_UNACTIVE_BOMB -10
@@ -17,4 +22,4 @@
 #define DISCOUNT_FACTOR 0.75
 #define WEIGHT_STILL 5
 
-#define MAX_DIJKSTRA_DEPTH 2
+#define MAX_DIJKSTRA_DEPTH 4
