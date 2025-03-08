@@ -32,23 +32,26 @@ void Runner::run()
 {
     if (millis() - time4 >= 50)
     {
-        time4 = millis();
-        if (currentMazeSize != gladiator->maze->getCurrentMazeSize())
+        // Are we in the Maze ??
+        MazeSquare *currentSquare = gladiator->maze->getNearestSquare();
+        bool inTheMaze = controller.areWeInTheMaze();
+        if(!inTheMaze)
         {
-            gladiator->log("Maze size changed");
-            objective = gameState.searchObjective();
-            controller.goTo(objective.first, objective.second);
-            currentMazeSize = gladiator->maze->getCurrentMazeSize();
+            gladiator->log("We are not in the maze !!");
+        } else {
+            gladiator->log("Current position: %d, %d", currentSquare->i, currentSquare->j);
+            controller.returnToMaze();
         }
+        time4 = millis();
     }
 
-     if (controller.isTargetReached() || controller.hasNoTarget())
-     {
-         objective = gameState.searchObjective();
-         controller.goTo(objective.first, objective.second);
-         gladiator->log("Objective set to %d, %d", objective.first, objective.second);
-         time1 = millis();
-     }
+    if (controller.isTargetReached() || controller.hasNoTarget())
+    {
+        objective = gameState.searchObjective();
+        controller.goTo(objective.first, objective.second);
+        gladiator->log("Objective set to %d, %d", objective.first, objective.second);
+        time1 = millis();
+    }
 
     if (millis() - time2 >= 100)
     {

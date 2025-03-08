@@ -7,6 +7,7 @@ RobotController::RobotController(Gladiator *gladiator) : gladiator(gladiator), d
     currentTargetPath = nullptr;
     targetReached = false;
     newPathSet = false;
+    returnToMazeMode = false;
 }
 
 void RobotController::reset()
@@ -16,9 +17,34 @@ void RobotController::reset()
     currentTargetPath = nullptr;
 }
 
+bool RobotController::areWeInTheMaze() {
+    float currentSize = gladiator->maze->getCurrentMazeSize();
+    int numCases = currentSize/gladiator->maze->getSquareSize();
+    int numCasesMargin = (MAZE_SIZE - numCases)/2;
+    MazeSquare *currentSquare = gladiator->maze->getNearestSquare();
+
+    return !(currentSquare->i >= (MAZE_SIZE - numCasesMargin) 
+            || currentSquare->j < numCasesMargin
+            || currentSquare->i >= MAZE_SIZE - numCasesMargin 
+            || currentSquare->j < numCasesMargin);
+}
+
 void RobotController::run()
 {
     driver.run();
+
+    if (returnToMazeMode)
+    {
+        if (areWeInTheMaze())
+        {
+            returnToMazeMode = false;
+        }
+        else
+        {
+            driver.goTo(CENTER_X, CENTER_Y);
+            return;
+        }
+    }
 
     if (currentTargetPath != nullptr)
     {
@@ -30,7 +56,7 @@ void RobotController::run()
             gladiator->log("Current position: (%f, %f)", pos.x, pos.y);
 
             targetReached = true;
-            
+
             delete currentTargetPath;
             currentTargetPath = nullptr;
             driver.stop();
@@ -38,7 +64,7 @@ void RobotController::run()
         }
 
         // If target is reached, get next waypoint
-        if (driver.isTargetReached() || newPathSet)  // Ensure it picks the first waypoint too
+        if (driver.isTargetReached() || newPathSet) // Ensure it picks the first waypoint too
         {
             std::pair<int, int> next = currentTargetPath->waypoints.front();
             currentTargetPath->waypoints.erase(currentTargetPath->waypoints.begin());
@@ -74,12 +100,12 @@ void RobotController::goTo(int i, int j)
 Path RobotController::pathTo(int i, int j)
 {
     MazeSquare *position = gladiator->maze->getNearestSquare();
-    if(position == nullptr)
+    if (position == nullptr)
     {
         gladiator->log("Position is null");
     }
     MazeSquare *goal = gladiator->maze->getSquare(i, j);
-    if(goal == nullptr)
+    if (goal == nullptr)
     {
         gladiator->log("Goal is null");
     }
@@ -130,4 +156,9 @@ void RobotController::follow(const Path &path)
 std::pair<float, float> RobotController::caseToCoords(int i, int j)
 {
     return std::make_pair((float)(i + 0.5) * squareSize, (float)(j + 0.5) * squareSize);
+}
+
+void RobotController::returnToMaze()
+{
+    returnToMazeMode = true;
 }

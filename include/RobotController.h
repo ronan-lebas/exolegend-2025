@@ -18,6 +18,7 @@ private:
     Path *currentTargetPath;
     bool targetReached;
     bool newPathSet;
+    bool returnToMazeMode;
 public:
     RobotController(Gladiator *gladiator);
     void run();
@@ -28,6 +29,8 @@ public:
     void follow(const Path& path);
     bool isTargetReached() { return targetReached; }
     bool hasNoTarget() { return currentTargetPath == nullptr; }
+    void returnToMaze();
+    bool areWeInTheMaze();
 };
 
 #endif
