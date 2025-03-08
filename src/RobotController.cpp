@@ -17,16 +17,14 @@ void RobotController::reset()
     currentTargetPath = nullptr;
 }
 
-bool RobotController::areWeInTheMaze() {
+bool RobotController::areWeInTheMaze()
+{
     float currentSize = gladiator->maze->getCurrentMazeSize();
-    int numCases = currentSize/gladiator->maze->getSquareSize();
-    int numCasesMargin = (MAZE_SIZE - numCases)/2;
+    int numCases = currentSize / gladiator->maze->getSquareSize();
+    int numCasesMargin = (MAZE_SIZE - numCases) / 2;
     MazeSquare *currentSquare = gladiator->maze->getNearestSquare();
 
-    return !(currentSquare->i >= (MAZE_SIZE - numCasesMargin) 
-            || currentSquare->j < numCasesMargin
-            || currentSquare->i >= MAZE_SIZE - numCasesMargin 
-            || currentSquare->j < numCasesMargin);
+    return !(currentSquare->i >= (MAZE_SIZE - numCasesMargin) || currentSquare->j < numCasesMargin || currentSquare->i >= MAZE_SIZE - numCasesMargin || currentSquare->j < numCasesMargin);
 }
 
 void RobotController::run()
@@ -48,6 +46,8 @@ void RobotController::run()
 
     if (currentTargetPath != nullptr)
     {
+        // print size of the path
+        // gladiator->log("Path size: %lu", currentTargetPath->waypoints.size());
         // If no more waypoints, stop and clean up
         if (driver.isTargetReached() && currentTargetPath->waypoints.empty())
         {
@@ -66,6 +66,22 @@ void RobotController::run()
         // If target is reached, get next waypoint
         if (driver.isTargetReached() || newPathSet) // Ensure it picks the first waypoint too
         {
+            if (currentTargetPath->waypoints.size() >= 2)
+            {
+                // gladiator->log("Recomputing the path");
+                // We recompute the path at this point
+                Path newPath = pathTo(currentTargetPath->waypoints.back().first, currentTargetPath->waypoints.back().second);
+                // Erase first element of the path
+                newPath.waypoints.erase(newPath.waypoints.begin());
+                // If empty, we are already at the target
+                if (newPath.waypoints.empty())
+                {
+                    return;
+                }
+                delete currentTargetPath;
+                currentTargetPath = new Path(newPath);
+            }
+
             std::pair<int, int> next = currentTargetPath->waypoints.front();
             currentTargetPath->waypoints.erase(currentTargetPath->waypoints.begin());
 
@@ -93,7 +109,6 @@ void RobotController::goTo(int i, int j)
     //     gladiator->log("Waypoint: (%d, %d)", point.first, point.second);
     // }
     newPathSet = true;
-    delay(100);
     follow(path);
 }
 
