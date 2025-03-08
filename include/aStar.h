@@ -9,6 +9,7 @@
 #include <cmath>
 #include <algorithm>
 #include "RobotController.h"
+#include "config.h"
 
 struct Node {
     MazeSquare* square;

@@ -30,7 +30,7 @@ float GameState::loss(std::pair<int, int> position, MazeSquare * currentSquare, 
 
     float currentSize = gladiator->maze->getCurrentMazeSize();
     int numCases = currentSize/gladiator->maze->getSquareSize();
-    int numCasesMargin = (MAZE_SIZE - numCases)/2 + 1;
+    int numCasesMargin = (MAZE_SIZE - numCases)/2;
     loss += WEIGHT_NOGO * 
          (position.first >= (MAZE_SIZE - numCasesMargin) 
          || position.first < numCasesMargin

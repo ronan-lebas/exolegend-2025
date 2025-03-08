@@ -70,7 +70,7 @@ Path aStar(Gladiator *gladiator, MazeSquare *start, MazeSquare *goal)
                 if (!neighbor)
                 {
                     //gladiator->log("No neighbor");
-                    gNew = current->g + 5;
+                    gNew = current->g + PATH_WALL_WEIGHT;
                     if (index == 0)
                     {
                         //gladiator->log("no neighbor at north");
@@ -133,7 +133,23 @@ Path aStar(Gladiator *gladiator, MazeSquare *start, MazeSquare *goal)
                 else
                 { // danger
                     //gladiator->log("Danger neighbor");
-                    gNew = current->g + 5;
+                    switch(neighbor->danger) {
+                        case 0:
+                        case 1:
+                        case 2:
+                            gNew = current->g + PATH_BOMB_CHILL_WEIGHT;
+                            break;
+                        case 3:
+                        case 4:
+                        case 5:
+                            gNew = current->g + PATH_BOMB_URGENT_WEIGHT;
+                            break;
+                        case 6:
+                        case 7:
+                        default:
+                            gNew = current->g + PATH_BOMB_IMMINENT_WEIGHT;
+                            break;
+                    }
                 }
             }
 
