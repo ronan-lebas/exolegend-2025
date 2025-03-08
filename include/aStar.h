@@ -11,21 +11,25 @@
 #include "RobotController.h"
 #include "config.h"
 
-struct Node {
-    MazeSquare* square;
+struct Node
+{
+    MazeSquare *square;
     int g, h;
-    Node* parent;
+    Node *parent;
     int f() const { return g + h; }
 };
 
-struct CompareNodes {
-    bool operator()(const Node* a, const Node* b);
+struct CompareNodes
+{
+    bool operator()(const Node *a, const Node *b);
 };
 
-int manhattanDistance(MazeSquare* a, MazeSquare* b);
+int manhattanDistance(MazeSquare *a, MazeSquare *b);
 
-std::vector<MazeSquare*> reconstructPath(Node* node);
+std::vector<MazeSquare *> reconstructPath(Node *node);
 
-Path aStar(Gladiator* gladiator, MazeSquare* start, MazeSquare* goal);
+Path aStar(Gladiator *gladiator, MazeSquare *start, MazeSquare *goal);
+
+bool isInTheMaze(int i, int j, float currentMazeSize, float squareSize);
 
 #endif

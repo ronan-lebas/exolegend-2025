@@ -54,6 +54,7 @@ Path aStar(Gladiator *gladiator, MazeSquare *start, MazeSquare *goal)
 
         MazeSquare *neighbors[] = {current->square->northSquare, current->square->southSquare,
                                    current->square->westSquare, current->square->eastSquare};
+        
         //gladiator->log("Current square: %d, %d", current->square->i, current->square->j);
         for (int index = 0; index < 4; index++)
         {
@@ -75,7 +76,7 @@ Path aStar(Gladiator *gladiator, MazeSquare *start, MazeSquare *goal)
                     {
                         //gladiator->log("no neighbor at north");
                         MazeSquare *north = gladiator->maze->getSquare(current->square->i, current->square->j + 1);
-                        if (north)
+                        if (north && isInTheMaze(north->i, north->j, gladiator->maze->getCurrentMazeSize(), gladiator->maze->getSquareSize()))
                         {
                             neighbors[index] = north;
                             //gladiator->log("north found");
@@ -89,7 +90,7 @@ Path aStar(Gladiator *gladiator, MazeSquare *start, MazeSquare *goal)
                     {
                         //gladiator->log("no neighbor at south");
                         MazeSquare *south = gladiator->maze->getSquare(current->square->i, current->square->j - 1);
-                        if (south)
+                        if (south && isInTheMaze(south->i, south->j, gladiator->maze->getCurrentMazeSize(), gladiator->maze->getSquareSize()))
                         {
                             neighbors[index] = south;
                             //gladiator->log("south found");
@@ -103,7 +104,7 @@ Path aStar(Gladiator *gladiator, MazeSquare *start, MazeSquare *goal)
                     {
                         //gladiator->log("no neighbor at west");
                         MazeSquare *west = gladiator->maze->getSquare(current->square->i - 1, current->square->j);
-                        if (west)
+                        if (west && isInTheMaze(west->i, west->j, gladiator->maze->getCurrentMazeSize(), gladiator->maze->getSquareSize()))
                         {
                             neighbors[index] = west;
                             //gladiator->log("west found");
@@ -117,7 +118,7 @@ Path aStar(Gladiator *gladiator, MazeSquare *start, MazeSquare *goal)
                     {
                         MazeSquare *east = gladiator->maze->getSquare(current->square->i + 1, current->square->j);
                         gladiator->log("no neighbor at east");
-                        if (east)
+                        if (east && isInTheMaze(east->i, east->j, gladiator->maze->getCurrentMazeSize(), gladiator->maze->getSquareSize()))
                         {
                             neighbors[index] = east;
                             //gladiator->log("east found");
@@ -170,4 +171,12 @@ Path aStar(Gladiator *gladiator, MazeSquare *start, MazeSquare *goal)
 
     gladiator->log("Finished A*");
     return {};
+}
+
+bool isInTheMaze(int i, int j, float currentMazeSize, float squareSize)
+{
+    int numCases = currentMazeSize / squareSize;
+    int numCasesMargin = (MAZE_SIZE - numCases) / 2;
+
+    return !(i >= (MAZE_SIZE - numCasesMargin) || j < numCasesMargin || i >= MAZE_SIZE - numCasesMargin || j < numCasesMargin);
 }
