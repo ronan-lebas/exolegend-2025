@@ -38,9 +38,9 @@ void Runner::run()
         if(!inTheMaze)
         {
             gladiator->log("We are not in the maze !!");
-        } else {
-            gladiator->log("Current position: %d, %d", currentSquare->i, currentSquare->j);
             controller.returnToMaze();
+        } else {
+            // gladiator->log("Current position: %d, %d", currentSquare->i, currentSquare->j);
         }
         time4 = millis();
     }
