@@ -16,11 +16,13 @@ private:
     long time3;
     long time4;
     float currentMazeSize;
+    float threshold;
 public:
     Runner(Gladiator *gladiator);
     void instructions(); // Instructions for the robot
     void run(); // Main loop or execution function
     void reset(); // Reset function
+    float pointsExpected(int i, int j); // Points expected to be scored
 };
 
 #endif

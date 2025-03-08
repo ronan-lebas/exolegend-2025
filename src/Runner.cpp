@@ -11,6 +11,8 @@ Runner::Runner(Gladiator *gladiator) : controller(gladiator), gameState(gladiato
     currentMazeSize = gladiator->maze->getCurrentMazeSize();
 
     objective = std::make_pair(5, 5);
+
+    threshold = INITIAL_THRESHOLD;
 }
 
 void Runner::reset()
@@ -35,11 +37,13 @@ void Runner::run()
         // Are we in the Maze ??
         // MazeSquare *currentSquare = gladiator->maze->getNearestSquare();
         bool inTheMaze = controller.areWeInTheMaze();
-        if(!inTheMaze)
+        if (!inTheMaze)
         {
             // gladiator->log("We are not in the maze !!");
             controller.returnToMaze();
-        } else {
+        }
+        else
+        {
             // gladiator->log("Current position: %d, %d", currentSquare->i, currentSquare->j);
         }
         time4 = millis();
@@ -72,9 +76,47 @@ void Runner::run()
     {
         if (gladiator->weapon->canDropBombs(1) > 0)
         {
-            gladiator->weapon->dropBombs(1);
+            float expectedPoints = pointsExpected(objective.first, objective.second);
+            //gladiator->log("Expected points: %f/%f", expectedPoints, threshold);
+            if (expectedPoints > threshold)
+            {
+                //gladiator->log("Dropping bomb at %d, %d", objective.first, objective.second);
+                gladiator->weapon->dropBombs(1);
+                threshold = INITIAL_THRESHOLD;
+            }
+            threshold -= THRESHOLD_DECAY;
+            threshold = threshold < MIN_THRESHOLD ? MIN_THRESHOLD : threshold;
         }
     }
 
     controller.run();
+}
+
+float Runner::pointsExpected(int i, int j)
+{
+    // Get the square at i, j
+    MazeSquare *square = gladiator->maze->getSquare(i, j);
+    float score = 0.0;
+    int myTeam = gladiator->robot->getData().teamId;
+    MazeSquare *neighbors[5] = {square, square->northSquare, square->southSquare, square->eastSquare, square->westSquare};
+    for (int i = 0; i < 5; i++)
+    {
+        if (neighbors[i] != nullptr)
+        {
+            if (neighbors[i]->possession == 0)
+            {
+                score += 1.0;
+            }
+            else if (neighbors[i]->possession == myTeam)
+            {
+                score += 0.0;
+            }
+            else
+            {
+                score += 2.0;
+            }
+        }
+    }
+    score = score / 5.0;
+    return score;
 }
