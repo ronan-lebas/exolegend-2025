@@ -51,15 +51,70 @@ Path aStar(Gladiator *gladiator, MazeSquare *start, MazeSquare *goal)
 
         MazeSquare *neighbors[] = {current->square->northSquare, current->square->southSquare,
                                    current->square->westSquare, current->square->eastSquare};
-
-        bool hasNeighbourg = false;
-
-        for (MazeSquare *neighbor : neighbors)
+        gladiator->log("Current square: %d, %d", current->square->i, current->square->j);
+        for (int index=0 ; index<4 ; index++)
         {
-            if (!neighbor || neighbor->danger > 0) // Avoid case with RED
-                continue;
-            int gNew = current->g + 1;
-            hasNeighbourg = true;
+            MazeSquare *neighbor = neighbors[index];
+            gladiator->log("index: %d", index);
+            int gNew;
+            if (neighbor && neighbor->danger == 0){
+                gladiator->log("No danger and neighbor");
+                gNew = current->g + 1;
+            }
+            else {
+                if (!neighbor) {
+                    gladiator->log("No neighbor");
+                    gNew = current->g + 5;
+                    if (index == 0) {
+                        gladiator->log("no neighbor at north");
+                        MazeSquare * north = gladiator->maze->getSquare(current->square->i, current->square->j+1);
+                        if (north) {
+                            neighbors[index] = north;
+                            gladiator->log("north found");
+                        }
+                        else {
+                            gladiator->log("north not found");
+                        }
+                    }
+                    else if (index == 1) {
+                        gladiator->log("no neighbor at south");
+                        MazeSquare * south = gladiator->maze->getSquare(current->square->i, current->square->j-1);
+                        if (south) {
+                            neighbors[index] = south;
+                            gladiator->log("south found");
+
+                        }
+                        else {
+                            gladiator->log("south not found");
+                        }
+                    }
+                    else if (index == 2) {
+                        gladiator->log("no neighbor at west");
+                        MazeSquare * west = gladiator->maze->getSquare(current->square->i-1, current->square->j);
+                        if (west) {
+                            neighbors[index] = west;
+                            gladiator->log("west found");
+                        }
+                        else {
+                            gladiator->log("west not found");
+                        }
+                    }
+                    else {
+                        MazeSquare * east = gladiator->maze->getSquare(current->square->i+1, current->square->j);
+                        gladiator->log("no neighbor at east");
+                        if (east) {
+                            neighbors[index] = east;
+                            gladiator->log("east found");
+                        }
+                        else {
+                            gladiator->log("east not found");
+                        }
+                    }
+                }
+                else { // danger
+                    gladiator->log("Danger neighbor");
+                    gNew = current->g + 5;
+                }
             if (!allNodes.count(neighbor) || gNew < allNodes[neighbor]->g)
             {
                 Node *neighborNode = new Node{neighbor, gNew, manhattanDistance(neighbor, goal), current};
@@ -67,52 +122,10 @@ Path aStar(Gladiator *gladiator, MazeSquare *start, MazeSquare *goal)
                 allNodes[neighbor] = neighborNode;
             }
         }
-
-        if (!hasNeighbourg)
-        {
-            gladiator->log("No neighbourg");
-            MazeSquare *west = gladiator->maze->getSquare(current->square->i - 1, current->square->j);
-            MazeSquare *east = gladiator->maze->getSquare(current->square->i + 1, current->square->j);
-            MazeSquare *north = gladiator->maze->getSquare(current->square->i, current->square->j - 1);
-            MazeSquare *south = gladiator->maze->getSquare(current->square->i, current->square->j + 1);
-            if (current->square->i > 6 && west != nullptr && west->danger == 0)
-            {
-                gladiator->log("Moving west");
-                Node *westNode = new Node{west, current->g + 1, manhattanDistance(west, goal), current};
-                openSet.push(westNode);
-                allNodes[west] = westNode;
-            } else if 
-            (current->square->j > 6 && south != nullptr && south->danger == 0)
-            {
-                gladiator->log("Moving south");
-                Node *southNode = new Node{south, current->g + 1, manhattanDistance(south, goal), current};
-                openSet.push(southNode);
-                allNodes[south] = southNode;
-            } else if
-            (current->square->j < 6 && north != nullptr && north->danger == 0)
-            {
-                gladiator->log("Moving north");
-                Node *northNode = new Node{north, current->g + 1, manhattanDistance(north, goal), current};
-                openSet.push(northNode);
-                allNodes[north] = northNode;
-            } 
-            else if (east != nullptr && east->danger == 0) // Move east
-            {
-                gladiator->log("Moving east");
-                Node *eastNode = new Node{east, current->g + 1, manhattanDistance(east, goal), current};
-                openSet.push(eastNode);
-                allNodes[east] = eastNode;
-            } else {
-                // West by default
-                Node *westNode = new Node{west, current->g + 1, manhattanDistance(west, goal), current};
-                openSet.push(westNode);
-                allNodes[west] = westNode;
-            }
-        }
     }
 
     for (auto &pair : allNodes)
         delete pair.second;
-
+    }
     return {};
 }
