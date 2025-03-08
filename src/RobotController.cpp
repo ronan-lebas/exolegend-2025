@@ -23,6 +23,11 @@ void RobotController::run()
     if (currentTargetPath != nullptr)
     {
         // If no more waypoints, stop and clean up
+        // if empty print it
+        if (currentTargetPath->waypoints.empty())
+        {
+            gladiator->log("No more waypoints");
+        }
         if (driver.isTargetReached() && currentTargetPath->waypoints.empty())
         {
             gladiator->log("Path finished");
@@ -59,11 +64,15 @@ void RobotController::run()
 void RobotController::goTo(int i, int j)
 {
     Path path = pathTo(i, j);
+    gladiator->log("Path to (%d, %d) computed :", i, j);
+    // print size of path
+    gladiator->log("Path size: %lu", path.waypoints.size());
     for (const auto &point : path.waypoints)
     {
         gladiator->log("Waypoint: (%d, %d)", point.first, point.second);
     }
     newPathSet = true;
+    delay(100);
     follow(path);
 }
 
@@ -79,7 +88,7 @@ Path RobotController::pathTo(int i, int j)
     {
         gladiator->log("Goal is null");
     }
-    return aStar(gladiator, gladiator->maze->getNearestSquare(), gladiator->maze->getSquare(i, j));
+    return aStar(gladiator, position, goal);
 }
 
 Path RobotController::straightPath(int i, int j)

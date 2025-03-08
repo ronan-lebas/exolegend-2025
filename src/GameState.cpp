@@ -51,35 +51,35 @@ float GameState::loss(std::pair<int, int> position, MazeSquare * currentSquare, 
 
     loss += square->coin.value >= 1 ? WEIGHT_UNACTIVE_BOMB : 0;
 
-    // int myTeamId = gladiator->robot->getData().teamId;
-    // RobotList robotList = gladiator->game->getPlayingRobotsId();
-    // for (int i = 0; i < 4; i++)
-    // {
-    //     if (robotList.ids[i] == 0 || robotList.ids[i] == gladiator->robot->getData().id) // Skip if robot is not playing or is the current robot
-    //     {
-    //         continue;
-    //     }
-    //     RobotData robot_data = gladiator->game->getOtherRobotData(robotList.ids[i]);
-    //     if (robot_data.teamId != myTeamId)
-    //     {
-    //         loss += WEIGHT_ENEMY * std::sqrt(std::pow(currentPosition.x - robot_data.position.x, 2) + std::pow(currentPosition.y - robot_data.position.y, 2));
-    //     }
-    //     else
-    //     {
-    //         loss += WEIGHT_FRIEND * std::sqrt(std::pow(currentPosition.x - robot_data.position.x, 2) + std::pow(currentPosition.y - robot_data.position.y, 2));
-    //     }
-    // }
+    int myTeamId = gladiator->robot->getData().teamId;
+    RobotList robotList = gladiator->game->getPlayingRobotsId();
+    for (int i = 0; i < 4; i++)
+    {
+        if (robotList.ids[i] == 0 || robotList.ids[i] == gladiator->robot->getData().id) // Skip if robot is not playing or is the current robot
+        {
+            continue;
+        }
+        RobotData robot_data = gladiator->game->getOtherRobotData(robotList.ids[i]);
+        if (robot_data.teamId != myTeamId)
+        {
+            loss += WEIGHT_ENEMY * std::sqrt(std::pow(currentPosition.x - robot_data.position.x, 2) + std::pow(currentPosition.y - robot_data.position.y, 2));
+        }
+        else
+        {
+            loss += WEIGHT_FRIEND * std::sqrt(std::pow(currentPosition.x - robot_data.position.x, 2) + std::pow(currentPosition.y - robot_data.position.y, 2));
+        }
+    }
 
     // Penalize if the square has been visited recently
-    // float discount_factor = DISCOUNT_FACTOR;
-    // for (int i = 0; i < NUMBER_OF_CASES_PENALTY; i++)
-    // {
-    //     if (last_visited[i] == position)
-    //     {
-    //         loss += WEIGHT_STILL * discount_factor;
-    //     }
-    //     discount_factor *= DISCOUNT_FACTOR;
-    // }
+    float discount_factor = DISCOUNT_FACTOR;
+    for (int i = 0; i < NUMBER_OF_CASES_PENALTY; i++)
+    {
+        if (last_visited[i] == position)
+        {
+            loss += WEIGHT_STILL * discount_factor;
+        }
+        discount_factor *= DISCOUNT_FACTOR;
+    }
 
     return loss;
 }
@@ -87,6 +87,11 @@ float GameState::loss(std::pair<int, int> position, MazeSquare * currentSquare, 
 void GameState::updateVisited(void)
 {
     MazeSquare *currentSquare = gladiator->maze->getNearestSquare();
+    if (currentSquare == nullptr)
+    {
+        gladiator->log("Current square is null");
+        return;
+    }
 
     // update last visited array if the position is not already in it
     if (last_visited[0].first != currentSquare->i || last_visited[0].second != currentSquare->j)
@@ -110,6 +115,12 @@ std::pair<int, int> GameState::searchObjective(void)
     std::pair<int, int> bestPosition;
 
     MazeSquare *currentSquare = gladiator->maze->getNearestSquare();
+    if (currentSquare == nullptr)
+    {
+        gladiator->log("Current square is null = impossible to search objective");
+        return {6, 6};
+    }
+
     Position currentPosition = gladiator->robot->getData().position;
     std::unordered_map<MazeSquare *, int> distances = dijkstra(currentSquare);
 

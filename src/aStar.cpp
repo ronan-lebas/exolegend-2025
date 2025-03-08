@@ -24,6 +24,8 @@ std::vector<MazeSquare *> reconstructPath(Node *node)
 
 Path aStar(Gladiator *gladiator, MazeSquare *start, MazeSquare *goal)
 {
+    gladiator->log("A* from (%d, %d) to (%d, %d)", start->i, start->j, goal->i, goal->j);
+    delay(100);
     std::priority_queue<Node *, std::vector<Node *>, CompareNodes> openSet;
     std::unordered_map<MazeSquare *, Node *> allNodes;
 
@@ -46,6 +48,7 @@ Path aStar(Gladiator *gladiator, MazeSquare *start, MazeSquare *goal)
             {
                 path2.waypoints.push_back(std::make_pair(square->i, square->j));
             }
+            gladiator->log("Finished A*");
             return path2;
         }
 
@@ -122,10 +125,54 @@ Path aStar(Gladiator *gladiator, MazeSquare *start, MazeSquare *goal)
                 allNodes[neighbor] = neighborNode;
             }
         }
+
+        if (!hasNeighbourg)
+        {
+            gladiator->log("No neighbourg");
+            MazeSquare *west = gladiator->maze->getSquare(current->square->i - 1, current->square->j);
+            MazeSquare *east = gladiator->maze->getSquare(current->square->i + 1, current->square->j);
+            MazeSquare *north = gladiator->maze->getSquare(current->square->i, current->square->j - 1);
+            MazeSquare *south = gladiator->maze->getSquare(current->square->i, current->square->j + 1);
+            if (current->square->i > 6 && west != nullptr && west->danger == 0)
+            {
+                gladiator->log("Moving west");
+                Node *westNode = new Node{west, current->g + 1, manhattanDistance(west, goal), current};
+                openSet.push(westNode);
+                allNodes[west] = westNode;
+            } else if 
+            (current->square->j > 6 && south != nullptr && south->danger == 0)
+            {
+                gladiator->log("Moving south");
+                Node *southNode = new Node{south, current->g + 1, manhattanDistance(south, goal), current};
+                openSet.push(southNode);
+                allNodes[south] = southNode;
+            } else if
+            (current->square->j < 6 && north != nullptr && north->danger == 0)
+            {
+                gladiator->log("Moving north");
+                Node *northNode = new Node{north, current->g + 1, manhattanDistance(north, goal), current};
+                openSet.push(northNode);
+                allNodes[north] = northNode;
+            } 
+            else if (east != nullptr && east->danger == 0) // Move east
+            {
+                gladiator->log("Moving east");
+                Node *eastNode = new Node{east, current->g + 1, manhattanDistance(east, goal), current};
+                openSet.push(eastNode);
+                allNodes[east] = eastNode;
+            } else {
+                // By defualt: center of the maze
+                MazeSquare *center = gladiator->maze->getSquare(6, 6);
+                Node *centerNode = new Node{center, current->g + 1, manhattanDistance(center, goal), current};
+                openSet.push(centerNode);
+                allNodes[center] = centerNode;
+            }
+        }
     }
 
     for (auto &pair : allNodes)
         delete pair.second;
-    }
+
+    gladiator->log("Finished A*");
     return {};
 }

@@ -26,12 +26,6 @@ void Runner::instructions()
 {
     gladiator->control->setWheelPidCoefs(WheelAxis::LEFT, 0.4, 0.8, 0.);
     gladiator->control->setWheelPidCoefs(WheelAxis::RIGHT, 0.4, 0.8, 0.);
-    objective = gameState.searchObjective();
-    controller.goTo(objective.first, objective.second);
-    gladiator->log("Objective set to %d, %d", objective.first, objective.second);
-
-    // Example usage
-    // controller.goTo(11, 1);
 }
 
 void Runner::run()
@@ -48,16 +42,25 @@ void Runner::run()
         }
     }
 
-    if (controller.isTargetReached())
-    {
-        objective = gameState.searchObjective();
-        controller.goTo(objective.first, objective.second);
-        gladiator->log("Objective set to %d, %d", objective.first, objective.second);
-        time1 = millis();
-    }
+     if (controller.isTargetReached() || controller.hasNoTarget())
+     {
+         objective = gameState.searchObjective();
+         controller.goTo(objective.first, objective.second);
+         gladiator->log("Objective set to %d, %d", objective.first, objective.second);
+         time1 = millis();
+     }
 
     if (millis() - time2 >= 100)
     {
+        // // log if get nearest squre return null
+        // if (gladiator->maze->getNearestSquare() == nullptr)
+        // {
+        //     gladiator->log("Nearest square is null");
+        // }
+        // else
+        // {
+        //     gladiator->log("Current position: %d, %d", gladiator->maze->getNearestSquare()->i, gladiator->maze->getNearestSquare()->j);
+        // }
         gameState.updateVisited();
         time2 = millis();
     }
