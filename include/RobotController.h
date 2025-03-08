@@ -27,6 +27,7 @@ public:
     Path pathTo(int i, int j);
     void follow(const Path& path);
     bool isTargetReached() { return targetReached; }
+    void runAway();
 };
 
 #endif

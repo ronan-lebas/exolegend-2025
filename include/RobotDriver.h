@@ -21,6 +21,7 @@ public:
     void forwardLeft();
     void forwardRight();
     void stop();
+    void runAway();
 };
 
 #endif

@@ -19,6 +19,8 @@ public:
     void instructions(); // Instructions for the robot
     void run(); // Main loop or execution function
     void reset(); // Reset function
+    std::pair<int, int> choose_simple_objective();
+
 };
 
 #endif

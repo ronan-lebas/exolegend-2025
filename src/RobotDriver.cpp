@@ -121,3 +121,55 @@ void RobotDriver::stop()
     gladiator->control->setWheelSpeed(WheelAxis::LEFT, 0);
     gladiator->control->setWheelSpeed(WheelAxis::RIGHT, 0);
 }
+
+void RobotDriver::runAway()
+{
+    Position position = gladiator->robot->getData().position;
+    float dx = 1.5 - position.x;
+    float dy = 1.5 - position.y;
+    float theta = std::atan2(dy, dx);
+
+    // Normalize theta to be within the interval [-pi, pi] most close to position.a
+    while (theta - position.a > M_PI)
+        theta -= 2 * M_PI;
+    while (theta - position.a < -M_PI)
+        theta += 2 * M_PI;
+
+    float obj_a = position.a;
+
+    // Normalize obj_a to be within the interval [-pi, pi]
+    while (obj_a > M_PI)
+        obj_a -= 2 * M_PI;
+    while (obj_a < -M_PI)
+        obj_a += 2 * M_PI;
+
+    float diff = abs(theta - obj_a);
+    // gladiator->log("Angle to target: %f", theta);
+    // gladiator->log("Current angle: %f", obj_a);
+    // gladiator->log("Diff angle: %f", diff);
+
+    if (diff > ANGLE_MARGIN)
+    {
+        // Rotate towards target
+        if (theta > position.a)
+        {
+            stop();
+            rotateLeft();
+            // gladiator->log("Rotate left");
+        }
+        else
+        {
+            stop();
+            rotateRight();
+            // gladiator->log("Rotate right");
+        }
+    }
+    else{
+        // Move forward toward the obj
+        stop();
+        gladiator->control->setWheelSpeed(WheelAxis::LEFT, FORWARD_SPEED*1.5);
+        gladiator->control->setWheelSpeed(WheelAxis::RIGHT, FORWARD_SPEED*1.5);
+
+    }
+
+}

@@ -47,7 +47,7 @@ Path aStar(MazeSquare* start, MazeSquare* goal) {
             if (!neighbor) continue;
             int gNew = current->g + 1;
             
-            if (!allNodes.count(neighbor) || gNew < allNodes[neighbor]->g) {
+            if ((!allNodes.count(neighbor) || gNew < allNodes[neighbor]->g)){ //&& (!neighbor->danger)) {
                 Node* neighborNode = new Node{neighbor, gNew, manhattanDistance(neighbor, goal), current};
                 openSet.push(neighborNode);
                 allNodes[neighbor] = neighborNode;

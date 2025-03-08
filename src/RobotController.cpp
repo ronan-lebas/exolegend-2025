@@ -113,6 +113,11 @@ void RobotController::follow(const Path &path)
     currentTargetPath = new Path(path);
 }
 
+void RobotController::runAway()
+{
+    driver.runAway();
+}
+
 std::pair<float, float> RobotController::caseToCoords(int i, int j)
 {
     return std::make_pair((float)(i + 0.5) * squareSize, (float)(j + 0.5) * squareSize);
