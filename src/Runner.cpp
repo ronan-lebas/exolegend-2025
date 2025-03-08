@@ -6,6 +6,9 @@ Runner::Runner(Gladiator *gladiator) : controller(gladiator), gameState(gladiato
     time1 = millis();
     time2 = millis();
     time3 = millis();
+    time4 = millis();
+
+    currentMazeSize = gladiator->maze->getCurrentMazeSize();
 
     objective = std::make_pair(5, 5);
 }
@@ -33,7 +36,19 @@ void Runner::instructions()
 
 void Runner::run()
 {
-    if (controller.isTargetReached() || millis() - time1 >= 20250)
+    if (millis() - time4 >= 50)
+    {
+        time4 = millis();
+        if (currentMazeSize != gladiator->maze->getCurrentMazeSize())
+        {
+            gladiator->log("Maze size changed");
+            objective = gameState.searchObjective();
+            controller.goTo(objective.first, objective.second);
+            currentMazeSize = gladiator->maze->getCurrentMazeSize();
+        }
+    }
+
+    if (controller.isTargetReached())
     {
         objective = gameState.searchObjective();
         controller.goTo(objective.first, objective.second);
@@ -49,9 +64,9 @@ void Runner::run()
 
     if (millis() - time3 >= 100)
     {
-        if (gladiator->weapon->canDropBombs(3) > 0)
+        if (gladiator->weapon->canDropBombs(1) > 0)
         {
-            gladiator->weapon->dropBombs(3);
+            gladiator->weapon->dropBombs(1);
         }
     }
 

@@ -69,7 +69,17 @@ void RobotController::goTo(int i, int j)
 
 Path RobotController::pathTo(int i, int j)
 {
-    return aStar(gladiator->maze->getNearestSquare(), gladiator->maze->getSquare(i, j));
+    MazeSquare *position = gladiator->maze->getNearestSquare();
+    if(position == nullptr)
+    {
+        gladiator->log("Position is null");
+    }
+    MazeSquare *goal = gladiator->maze->getSquare(i, j);
+    if(goal == nullptr)
+    {
+        gladiator->log("Goal is null");
+    }
+    return aStar(gladiator, gladiator->maze->getNearestSquare(), gladiator->maze->getSquare(i, j));
 }
 
 Path RobotController::straightPath(int i, int j)

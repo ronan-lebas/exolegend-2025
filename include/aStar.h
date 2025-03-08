@@ -25,6 +25,6 @@ int manhattanDistance(MazeSquare* a, MazeSquare* b);
 
 std::vector<MazeSquare*> reconstructPath(Node* node);
 
-Path aStar(MazeSquare* start, MazeSquare* goal);
+Path aStar(Gladiator* gladiator, MazeSquare* start, MazeSquare* goal);
 
 #endif
