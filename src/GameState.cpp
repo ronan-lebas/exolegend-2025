@@ -9,15 +9,17 @@ GameState::GameState(Gladiator *gladiator) : gladiator(gladiator)
     }
 }
 
-float GameState::loss(std::pair<int, int> position)
+float GameState::loss(std::pair<int, int> position, MazeSquare * currentSquare, Position currentPosition, std::unordered_map<MazeSquare *, int> distances)
 {
     MazeSquare *square = gladiator->maze->getSquare(position.first, position.second);
-    Position currentPosition = gladiator->robot->getData().position;
-    MazeSquare *currentSquare = gladiator->maze->getNearestSquare();
 
     float loss = 0;
 
-    loss += WEIGHT_DISTANCE * std::sqrt(std::pow(position.first - currentSquare->i, 2) + std::pow(position.second - currentSquare->j, 2));
+    if (distances.find(square) != distances.end()) {
+        loss += WEIGHT_DISTANCE * distances[square];
+    } else {
+        loss += 1000;
+    }
 
     loss += WEIGHT_ACTIVE_BOMB * square->danger;
 
@@ -81,13 +83,17 @@ std::pair<int, int> GameState::searchObjective(void)
     int minLoss = 1000000; // Large number
     std::pair<int, int> bestPosition;
 
+    MazeSquare *currentSquare = gladiator->maze->getNearestSquare();
+    Position currentPosition = gladiator->robot->getData().position;
+    std::unordered_map<MazeSquare *, int> distances = dijkstra(currentSquare);
+
     float losses[MAZE_SIZE][MAZE_SIZE];
 
     for (int i = 0; i < MAZE_SIZE; i++)
     {
         for (int j = 0; j < MAZE_SIZE; j++)
         {
-            int currentLoss = loss({i, j});
+            int currentLoss = loss({i, j}, currentSquare, currentPosition, distances);
             losses[i][j] = currentLoss;
             if (currentLoss < minLoss)
             {

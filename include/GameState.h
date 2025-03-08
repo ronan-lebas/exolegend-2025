@@ -4,6 +4,7 @@
 #include "gladiator.h"
 #include "config.h"
 #include <vector>
+#include "dijkstra.h"
 
 class GameState {
     private:
@@ -13,7 +14,7 @@ class GameState {
     public:
         GameState(Gladiator *gladiator);
         void updateVisited(void);
-        float loss(std::pair<int, int> position);
+        float loss(std::pair<int, int> position, MazeSquare * currentSquare, Position currentPosition, std::unordered_map<MazeSquare*, int> distances);
         std::pair<int, int> searchObjective(void);
 };
 
