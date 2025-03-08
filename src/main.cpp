@@ -31,7 +31,7 @@ void loop()
         while (true)
         {
             runner->run();
-            delay(50);
+            delay(10);
         }
     }
 }

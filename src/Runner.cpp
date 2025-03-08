@@ -33,11 +33,12 @@ void Runner::instructions()
 
 void Runner::run()
 {
-    if (controller.isTargetReached())
+    if (controller.isTargetReached() || millis() - time1 >= 20250)
     {
         objective = gameState.searchObjective();
         controller.goTo(objective.first, objective.second);
         gladiator->log("Objective set to %d, %d", objective.first, objective.second);
+        time1 = millis();
     }
 
     if (millis() - time2 >= 100)
@@ -48,9 +49,9 @@ void Runner::run()
 
     if (millis() - time3 >= 100)
     {
-        if (gladiator->weapon->getBombCount() > 0)
+        if (gladiator->weapon->canDropBombs(3) > 0)
         {
-            //gladiator->weapon->dropBombs(1);
+            gladiator->weapon->dropBombs(3);
         }
     }
 
