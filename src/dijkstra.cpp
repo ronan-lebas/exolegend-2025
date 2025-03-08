@@ -1,4 +1,5 @@
 #include "dijkstra.h"
+#include "config.h"
 
 std::unordered_map<MazeSquare*, int> dijkstra(MazeSquare* start) {
     std::unordered_map<MazeSquare*, int> distances;
@@ -14,6 +15,7 @@ std::unordered_map<MazeSquare*, int> dijkstra(MazeSquare* start) {
         pq.pop();
         
         if (currentDist > distances[current]) continue;
+        if (currentDist >= MAX_DIJKSTRA_DEPTH) continue;
         
         MazeSquare* neighbors[] = {current->northSquare, current->southSquare,
                                    current->westSquare, current->eastSquare};
@@ -22,7 +24,8 @@ std::unordered_map<MazeSquare*, int> dijkstra(MazeSquare* start) {
             if (!neighbor) continue;
             int newDist = currentDist + 1;
             
-            if (!distances.count(neighbor) || newDist < distances[neighbor]) {
+            if (newDist <= MAX_DIJKSTRA_DEPTH && 
+                (!distances.count(neighbor) || newDist < distances[neighbor])) {
                 distances[neighbor] = newDist;
                 pq.push({newDist, neighbor});
             }

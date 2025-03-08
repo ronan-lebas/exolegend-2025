@@ -28,7 +28,7 @@ float GameState::loss(std::pair<int, int> position, MazeSquare * currentSquare, 
     if (distances.find(square) != distances.end()) {
         loss += WEIGHT_DISTANCE * distances[square];
     } else {
-        loss += 1000;
+        loss += WEIGHT_WALL;
     }
 
     loss += WEIGHT_ACTIVE_BOMB * square->danger;
