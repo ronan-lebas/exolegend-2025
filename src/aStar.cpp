@@ -22,7 +22,7 @@ std::vector<MazeSquare *> reconstructPath(Node *node)
     return path;
 }
 
-Path aStar(Gladiator *gladiator, MazeSquare *start, MazeSquare *goal)
+Path aStar(Gladiator *gladiator, MazeSquare *start, MazeSquare *goal, long time_since_start)
 {
     gladiator->log("A* from (%d, %d) to (%d, %d)", start->i, start->j, goal->i, goal->j);
     delay(100);
@@ -117,7 +117,7 @@ Path aStar(Gladiator *gladiator, MazeSquare *start, MazeSquare *goal)
                     else
                     {
                         MazeSquare *east = gladiator->maze->getSquare(current->square->i + 1, current->square->j);
-                        gladiator->log("no neighbor at east");
+                        //gladiator->log("no neighbor at east");
                         if (east && isInTheMaze(east->i, east->j, gladiator->maze->getCurrentMazeSize(), gladiator->maze->getSquareSize()))
                         {
                             neighbors[index] = east;
@@ -152,6 +152,22 @@ Path aStar(Gladiator *gladiator, MazeSquare *start, MazeSquare *goal)
                             break;
                     }
                 }
+
+                // For the border
+                float currentMazeSize = gladiator->maze->getCurrentMazeSize();
+                float squareSize = gladiator->maze->getSquareSize();
+
+                // Use the timer to avoid the border
+                if (time_since_start % 20000 > 14000) {
+                    currentMazeSize -= 2 * squareSize;
+                    //gladiator->log("num cases + 1 : time since start: %ld", time_since_start);
+                }
+
+                if(neighbor && isInBorder(neighbor->i, neighbor->j, currentMazeSize, squareSize))
+                {
+                    //gladiator->log("%d, %d is in border", neighbor->i, neighbor->j);
+                    gNew += PATH_WALL_WEIGHT;
+                }
             }
 
             if (neighbor) // If neighbor has been created
@@ -179,4 +195,12 @@ bool isInTheMaze(int i, int j, float currentMazeSize, float squareSize)
     int numCasesMargin = (MAZE_SIZE - numCases) / 2;
 
     return !(i >= (MAZE_SIZE - numCasesMargin) || j < numCasesMargin || i >= MAZE_SIZE - numCasesMargin || j < numCasesMargin);
+}
+
+bool isInBorder(int i, int j, float currentMazeSize, float squareSize)
+{
+    int numCases = currentMazeSize / squareSize;
+    int numCasesMargin = (MAZE_SIZE - numCases) / 2;
+
+    return (i >= (MAZE_SIZE - numCasesMargin) || j < numCasesMargin || i >= MAZE_SIZE - numCasesMargin || j < numCasesMargin);
 }

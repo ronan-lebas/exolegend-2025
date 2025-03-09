@@ -13,6 +13,7 @@ class RobotController {
 private:
     Gladiator *gladiator;
     RobotDriver driver;
+    long time_at_start;
     float squareSize;
     std::pair<float, float> caseToCoords(int i, int j);
     Path *currentTargetPath;
@@ -24,6 +25,7 @@ public:
     void run();
     void reset();
     void goTo(int i, int j);
+    void setTimeAtStart(long time) { time_at_start = time; }
     Path straightPath(int i, int j);
     Path pathTo(int i, int j);
     void follow(const Path& path);

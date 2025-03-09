@@ -11,6 +11,7 @@ private:
     GameState gameState;
     Gladiator *gladiator;
     std::pair<int, int> objective;
+    long time_at_start;
     long time1;
     long time2;
     long time3;

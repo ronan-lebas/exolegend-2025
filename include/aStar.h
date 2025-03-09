@@ -28,8 +28,10 @@ int manhattanDistance(MazeSquare *a, MazeSquare *b);
 
 std::vector<MazeSquare *> reconstructPath(Node *node);
 
-Path aStar(Gladiator *gladiator, MazeSquare *start, MazeSquare *goal);
+Path aStar(Gladiator *gladiator, MazeSquare *start, MazeSquare *goal, long time_since_start);
 
 bool isInTheMaze(int i, int j, float currentMazeSize, float squareSize);
+
+bool isInBorder(int i, int j, float currentMazeSize, float squareSize);
 
 #endif

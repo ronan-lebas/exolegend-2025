@@ -39,7 +39,7 @@ void RobotController::run()
         }
         else
         {
-            //gladiator->log("Returning to maze !! MBAPPE SPEED !!");
+            // gladiator->log("Returning to maze !! MBAPPE SPEED !!");
             driver.goToMax(CENTER_X, CENTER_Y);
             return;
         }
@@ -77,6 +77,11 @@ void RobotController::run()
                 // If empty, we are already at the target
                 if (newPath.waypoints.empty())
                 {
+                    targetReached = true;
+                    delete currentTargetPath;
+                    currentTargetPath = nullptr;
+                    driver.stop();
+
                     return;
                 }
                 delete currentTargetPath;
@@ -101,6 +106,23 @@ void RobotController::run()
 
 void RobotController::goTo(int i, int j)
 {
+    // Get current position
+    MazeSquare *currentSquare = gladiator->maze->getNearestSquare();
+    if (currentSquare == nullptr)
+    {
+        gladiator->log("Current square is null");
+        return;
+    }
+    else
+    {
+        if (currentSquare->i == i && currentSquare->j == j)
+        {
+            gladiator->log("Already at the target");
+            targetReached = true;
+            return;
+        }
+    }
+
     Path path = pathTo(i, j);
     gladiator->log("Path to (%d, %d) computed :", i, j);
     // print size of path
@@ -125,7 +147,12 @@ Path RobotController::pathTo(int i, int j)
     {
         gladiator->log("Goal is null");
     }
-    return aStar(gladiator, position, goal);
+    if (position == goal)
+    {
+        return Path();
+    }
+    long time_since_start = millis() - time_at_start;
+    return aStar(gladiator, position, goal, time_since_start);
 }
 
 Path RobotController::straightPath(int i, int j)

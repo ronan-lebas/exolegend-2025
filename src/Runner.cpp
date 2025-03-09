@@ -1,8 +1,10 @@
 #include "Runner.h"
 
-Runner::Runner(Gladiator *gladiator) : controller(gladiator), gameState(gladiator), gladiator(gladiator)
+Runner::Runner(Gladiator *gladiator) : controller(gladiator), gameState(gladiator), gladiator(gladiator) 
 {
     // Initialization
+    time_at_start = 0;
+
     time1 = millis();
     time2 = millis();
     time3 = millis();
@@ -28,6 +30,9 @@ void Runner::instructions()
 {
     gladiator->control->setWheelPidCoefs(WheelAxis::LEFT, 0.4, 0.8, 0.);
     gladiator->control->setWheelPidCoefs(WheelAxis::RIGHT, 0.4, 0.8, 0.);
+    time_at_start = millis();
+    controller.setTimeAtStart(time_at_start);
+    gameState.setTimeAtStart(time_at_start);
 }
 
 void Runner::run()

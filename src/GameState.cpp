@@ -31,6 +31,11 @@ float GameState::loss(std::pair<int, int> position, MazeSquare * currentSquare, 
     float currentSize = gladiator->maze->getCurrentMazeSize();
     int numCases = currentSize/gladiator->maze->getSquareSize();
     int numCasesMargin = (MAZE_SIZE - numCases)/2;
+    long time_since_start = millis() - time_at_start;
+    if (time_since_start % 20000 > 14000) {
+        numCasesMargin = numCasesMargin + 1;
+        //gladiator->log("num cases + 1 : time since start: %ld", time_since_start);
+    }
     loss += WEIGHT_NOGO * 
          (position.first >= (MAZE_SIZE - numCasesMargin) 
          || position.first < numCasesMargin
