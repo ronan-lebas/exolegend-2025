@@ -81,6 +81,16 @@ void Runner::run()
     {
         if (gladiator->weapon->canDropBombs(1) > 0)
         {
+            // SPECIAL CASE: BIM BAM BOOM
+            float time_since_start = millis() - time_at_start;
+            if (time_since_start > 102000)
+            {
+                gladiator->weapon->dropBombs(1);
+                controller.stop();
+                gladiator->log("BIM BAM BOOM");
+                while(true); // It's over Anakin, I have the high ground
+            }
+
             float expectedPoints1bomb = pointsExpected1bomb(objective.first, objective.second);
             float expectedPoints2bombs = 0;
             if (gladiator->weapon->canDropBombs(2) > 0)

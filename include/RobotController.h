@@ -33,6 +33,7 @@ public:
     bool hasNoTarget() { return currentTargetPath == nullptr; }
     void returnToMaze();
     bool areWeInTheMaze();
+    void stop();
 };
 
 #endif

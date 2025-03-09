@@ -205,3 +205,8 @@ void RobotController::returnToMaze()
 {
     returnToMazeMode = true;
 }
+
+void RobotController::stop()
+{
+    driver.stop();
+}

@@ -166,7 +166,7 @@ Path aStar(Gladiator *gladiator, MazeSquare *start, MazeSquare *goal, long time_
                 if(neighbor && isInBorder(neighbor->i, neighbor->j, currentMazeSize, squareSize))
                 {
                     //gladiator->log("%d, %d is in border", neighbor->i, neighbor->j);
-                    gNew += PATH_WALL_WEIGHT;
+                    gNew += PATH_BORDER_WEIGHT;
                 }
             }
 
