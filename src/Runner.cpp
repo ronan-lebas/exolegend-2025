@@ -54,11 +54,12 @@ void Runner::run()
         time4 = millis();
     }
 
-    if (controller.isTargetReached() || controller.hasNoTarget())
+    if (controller.isTargetReached() || controller.hasNoTarget() || currentMazeSize != gladiator->maze->getCurrentMazeSize())
     {
         objective = gameState.searchObjective();
         controller.goTo(objective.first, objective.second);
         gladiator->log("Objective set to %d, %d", objective.first, objective.second);
+        currentMazeSize = gladiator->maze->getCurrentMazeSize();
         time1 = millis();
     }
 

@@ -54,78 +54,78 @@ Path aStar(Gladiator *gladiator, MazeSquare *start, MazeSquare *goal, long time_
 
         MazeSquare *neighbors[] = {current->square->northSquare, current->square->southSquare,
                                    current->square->westSquare, current->square->eastSquare};
-        
-        //gladiator->log("Current square: %d, %d", current->square->i, current->square->j);
+
+        // gladiator->log("Current square: %d, %d", current->square->i, current->square->j);
         for (int index = 0; index < 4; index++)
         {
-            //gladiator->log("index: %d", index);
+            // gladiator->log("index: %d", index);
             MazeSquare *neighbor = neighbors[index];
             int gNew;
             if (neighbor && neighbor->danger == 0)
             {
-                //gladiator->log("No danger and neighbor");
+                // gladiator->log("No danger and neighbor");
                 gNew = current->g + 1;
             }
             else
             {
                 if (!neighbor)
                 {
-                    //gladiator->log("No neighbor");
+                    // gladiator->log("No neighbor");
                     gNew = current->g + PATH_WALL_WEIGHT;
                     if (index == 0)
                     {
-                        //gladiator->log("no neighbor at north");
+                        // gladiator->log("no neighbor at north");
                         MazeSquare *north = gladiator->maze->getSquare(current->square->i, current->square->j + 1);
                         if (north && isInTheMaze(north->i, north->j, gladiator->maze->getCurrentMazeSize(), gladiator->maze->getSquareSize()))
                         {
                             neighbors[index] = north;
-                            //gladiator->log("north found");
+                            // gladiator->log("north found");
                         }
                         else
                         {
-                            //gladiator->log("north not found");
+                            // gladiator->log("north not found");
                         }
                     }
                     else if (index == 1)
                     {
-                        //gladiator->log("no neighbor at south");
+                        // gladiator->log("no neighbor at south");
                         MazeSquare *south = gladiator->maze->getSquare(current->square->i, current->square->j - 1);
                         if (south && isInTheMaze(south->i, south->j, gladiator->maze->getCurrentMazeSize(), gladiator->maze->getSquareSize()))
                         {
                             neighbors[index] = south;
-                            //gladiator->log("south found");
+                            // gladiator->log("south found");
                         }
                         else
                         {
-                            //gladiator->log("south not found");
+                            // gladiator->log("south not found");
                         }
                     }
                     else if (index == 2)
                     {
-                        //gladiator->log("no neighbor at west");
+                        // gladiator->log("no neighbor at west");
                         MazeSquare *west = gladiator->maze->getSquare(current->square->i - 1, current->square->j);
                         if (west && isInTheMaze(west->i, west->j, gladiator->maze->getCurrentMazeSize(), gladiator->maze->getSquareSize()))
                         {
                             neighbors[index] = west;
-                            //gladiator->log("west found");
+                            // gladiator->log("west found");
                         }
                         else
                         {
-                            //gladiator->log("west not found");
+                            // gladiator->log("west not found");
                         }
                     }
                     else
                     {
                         MazeSquare *east = gladiator->maze->getSquare(current->square->i + 1, current->square->j);
-                        //gladiator->log("no neighbor at east");
+                        // gladiator->log("no neighbor at east");
                         if (east && isInTheMaze(east->i, east->j, gladiator->maze->getCurrentMazeSize(), gladiator->maze->getSquareSize()))
                         {
                             neighbors[index] = east;
-                            //gladiator->log("east found");
+                            // gladiator->log("east found");
                         }
                         else
                         {
-                            //gladiator->log("east not found");
+                            // gladiator->log("east not found");
                         }
                     }
 
@@ -133,23 +133,24 @@ Path aStar(Gladiator *gladiator, MazeSquare *start, MazeSquare *goal, long time_
                 }
                 else
                 { // danger
-                    //gladiator->log("Danger neighbor");
-                    switch(neighbor->danger) {
-                        case 0:
-                        case 1:
-                        case 2:
-                            gNew = current->g + PATH_BOMB_CHILL_WEIGHT;
-                            break;
-                        case 3:
-                        case 4:
-                        case 5:
-                            gNew = current->g + PATH_BOMB_URGENT_WEIGHT;
-                            break;
-                        case 6:
-                        case 7:
-                        default:
-                            gNew = current->g + PATH_BOMB_IMMINENT_WEIGHT;
-                            break;
+                    // gladiator->log("Danger neighbor");
+                    switch (neighbor->danger)
+                    {
+                    case 0:
+                    case 1:
+                    case 2:
+                        gNew = current->g + PATH_BOMB_CHILL_WEIGHT;
+                        break;
+                    case 3:
+                    case 4:
+                    case 5:
+                        gNew = current->g + PATH_BOMB_URGENT_WEIGHT;
+                        break;
+                    case 6:
+                    case 7:
+                    default:
+                        gNew = current->g + PATH_BOMB_IMMINENT_WEIGHT;
+                        break;
                     }
                 }
 
@@ -158,15 +159,50 @@ Path aStar(Gladiator *gladiator, MazeSquare *start, MazeSquare *goal, long time_
                 float squareSize = gladiator->maze->getSquareSize();
 
                 // Use the timer to avoid the border
-                if (time_since_start % 20000 > 14000) {
+                if (time_since_start % 20000 > 14000)
+                {
                     currentMazeSize -= 2 * squareSize;
-                    //gladiator->log("num cases + 1 : time since start: %ld", time_since_start);
+                    // gladiator->log("num cases + 1 : time since start: %ld", time_since_start);
                 }
 
-                if(neighbor && isInBorder(neighbor->i, neighbor->j, currentMazeSize, squareSize))
+                if (neighbor && isInBorder(neighbor->i, neighbor->j, currentMazeSize, squareSize))
                 {
-                    //gladiator->log("%d, %d is in border", neighbor->i, neighbor->j);
+                    // gladiator->log("%d, %d is in border", neighbor->i, neighbor->j);
                     gNew += PATH_BORDER_WEIGHT;
+                }
+
+                if (neighbor)
+                {
+                    int myTeamId = gladiator->robot->getData().teamId;
+                    RobotList robotList = gladiator->game->getPlayingRobotsId();
+                    for (int i = 0; i < 4; i++)
+                    {
+                        //gladiator->log("Robot %d", robotList.ids[i]);
+                        if (robotList.ids[i] == 0 || robotList.ids[i] == gladiator->robot->getData().id) // Skip if robot is not playing or is the current robot
+                        {
+                            continue;
+                        }
+                        RobotData robot_data = gladiator->game->getOtherRobotData(robotList.ids[i]);
+                        //gladiator->log("Robot %d is at %f, %f", robotList.ids[i], robot_data.position.x, robot_data.position.y);
+                        if (robot_data.teamId != myTeamId)
+                        {
+                            int i = robot_data.position.x / squareSize - 0.5;
+                            int j = robot_data.position.y / squareSize - 0.5;
+                            if (i == neighbor->i && j == neighbor->j)
+                            {
+                                gNew += PATH_ENNEMY_WEIGHT;
+                            }
+                        }
+                        else
+                        {
+                            int i = robot_data.position.x / squareSize - 0.5;
+                            int j = robot_data.position.y / squareSize - 0.5;
+                            if (i == neighbor->i && j == neighbor->j)
+                            {
+                                gNew += PATH_FRIEND_WEIGHT;
+                            }
+                        }
+                    }
                 }
             }
 

@@ -67,11 +67,11 @@ float GameState::loss(std::pair<int, int> position, MazeSquare * currentSquare, 
         RobotData robot_data = gladiator->game->getOtherRobotData(robotList.ids[i]);
         if (robot_data.teamId != myTeamId)
         {
-            loss += WEIGHT_ENEMY * std::sqrt(std::pow(currentPosition.x - robot_data.position.x, 2) + std::pow(currentPosition.y - robot_data.position.y, 2));
+            loss += WEIGHT_ENNEMY * std::sqrt(std::pow((position.first + 0.5) * squareSize - robot_data.position.x, 2) + std::pow((position.second + 0.5) * squareSize - robot_data.position.y, 2));
         }
         else
         {
-            loss += WEIGHT_FRIEND * std::sqrt(std::pow(currentPosition.x - robot_data.position.x, 2) + std::pow(currentPosition.y - robot_data.position.y, 2));
+            loss += WEIGHT_FRIEND * std::sqrt(std::pow((position.first + 0.5) * squareSize - robot_data.position.x, 2) + std::pow((position.second + 0.5) * squareSize - robot_data.position.y, 2));
         }
     }
 
