@@ -2,7 +2,7 @@
 #define ANGLE_MARGIN 0.2
 
 #define FORWARD_SPEED 0.4
-#define ROTATE_SPEED 0.2
+#define ROTATE_SPEED 0.17
 
 #define FAST_FORWARD_SPEED 1.0
 #define FAST_ROTATE_SPEED 0.5
